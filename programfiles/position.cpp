@@ -1,0 +1,7 @@
+/*
+Store pieces
+Store side to move
+Apply move
+Undo move
+
+*/
