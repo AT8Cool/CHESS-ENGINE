@@ -43,10 +43,95 @@ std::vector<Square> generateWhitePawnMoves(char (&board)[9][9],Square position){
     
 
 
+
    
 
 
     return moves;
 }
+
+
+std::vector<Square> generateWhiteKnightMoves(char (&board)[9][9],Square position){
+    std::vector<Square> moves;
+    
+    int row = position.row;
+    int col = position.col;
+
+    int knightMoves[8][2] ={
+
+        {2,1},
+        {2,-1},
+        {-2, 1},
+        {-2,-1},
+
+        {1,2},
+        {1,-2},
+        {-1,2},
+        {-1,-2}
+
+    };
+
+    for(int i = 0; i< 8; i++){
+        int newRow = row + knightMoves[i][0];
+        int newCol = col + knightMoves[i][1];
+
+        if(newRow >= 0 && newRow <=7 and newCol >=1 and newCol <= 8 && !isupper(board[newRow][newCol])){
+            
+            moves.push_back({newRow,newCol});
+
+        }
+    }
+    return moves;
+
+}
+
+std::vector<Square> generateWhiteBishopMoves(char (&board)[9][9], Square position){
+    std::vector<Square> moves;
+
+    int BishopMoves[4][2] = {
+        {1,1},
+        {1,-1},
+        {-1,1},
+        {-1,-1}
+    };
+
+    for(int i = 0; i <4; i++){
+        int row = position.row;
+        int col = position.col;
+
+        for(int steps = 1; steps<8; steps++){
+
+            int newRow = row + BishopMoves[i][0] * steps;
+            int newCol = col + BishopMoves[i][1] * steps;
+
+        
+            
+            if(newRow <= 7 && newRow >=0 && newCol >= 1 && newCol <= 8 ){
+            
+                char target = board[newRow][newCol];
+                
+                if(target == '.'){
+                     moves.push_back({newRow,newCol});
+                }
+                else if(islower(target)){
+                     moves.push_back({newRow,newCol});
+                     break;
+                }
+                
+                else if(isupper(target)){
+                    break;
+                }
+                else{
+                    break;
+                }
+            }
+
+        }
+
+    }
+return moves;
+
+}
+
 
 
