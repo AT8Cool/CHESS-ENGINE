@@ -3,6 +3,16 @@
 #include "position.h"
 #include "genmoves.h"
 
+void printMoves(std::vector<Square> moves)
+{
+    for(auto move : moves)
+    {
+        std::cout << move.row
+                  << " "
+                  << move.col
+                  << '\n';
+    }
+}
 
 int main(){
 
@@ -20,9 +30,11 @@ int main(){
 };
 
 Square pawn = convertSquare("e2");
-auto moves = generateWhitePawnMoves(board,pawn);
+// auto moves = generateWhitePawnMoves(board,pawn);
 
+auto moves = generateWhiteKnightMoves(board, convertSquare("g1"));
 
+printMoves(moves);
 
 
 }

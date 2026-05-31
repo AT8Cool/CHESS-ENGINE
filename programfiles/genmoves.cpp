@@ -7,8 +7,6 @@ are the best or not. i.e It doesnt matter your king ends up in  check or vulener
 
 */
 #include "genmoves.h"
-
-
 std::vector<Square> generateWhitePawnMoves(char (&board)[9][9],Square position){
     std::vector<Square> moves;
 
@@ -41,12 +39,6 @@ std::vector<Square> generateWhitePawnMoves(char (&board)[9][9],Square position){
         }
     }
     
-
-
-
-   
-
-
     return moves;
 }
 
@@ -109,7 +101,7 @@ std::vector<Square> generateWhiteBishopMoves(char (&board)[9][9], Square positio
             if(newRow <= 7 && newRow >=0 && newCol >= 1 && newCol <= 8 ){
             
                 char target = board[newRow][newCol];
-                
+
                 if(target == '.'){
                      moves.push_back({newRow,newCol});
                 }
@@ -133,5 +125,178 @@ return moves;
 
 }
 
+std::vector<Square> generateWhiteRookMoves(char (&board)[9][9], Square position){
+    std::vector<Square> moves;
+    
+    int RookMoves[4][2] = {{0,1},
+                           {1,0},
+                           {-1,0},
+                           {0,-1}
+                            };
+    int row = position.row;
+    int col = position.col;
+
+    for(int i = 0; i< 4; i++){
+        for(int steps = 1; steps < 8; steps++){
+            int newRow = row + RookMoves[i][0] * steps;
+            int newCol = col + RookMoves[i][1] * steps;
+
+            if(newRow <= 7 && newRow >= 0 && newCol >=1 && newCol <= 8){
+                char target = board[newRow][newCol];
+
+                if(target == '.'){
+                     moves.push_back({newRow,newCol});
+                }
+                else if(islower(target)){
+                     moves.push_back({newRow,newCol});
+                     break;
+                }
+                
+                else if(isupper(target)){
+                    break;
+                }
+                else{
+                    break;
+                }
+            }
+
+        }
+
+    }
+return moves;
+};
+
+std::vector<Square> generateWhiteQueenMoves(char (&board)[9][9], Square position){
+    std::vector<Square> moves;
+
+    int row = position.row;
+    int col = position.col;
+
+    int QueenMoves[8][2] = {
+                          {0,1},
+                           {1,0},
+                           {-1,0},
+                           {0,-1},
+                           {1,1},
+                            {1,-1},
+                            {-1,1},
+                            {-1,-1}
+    };
+
+
+    for(int i = 0; i <8; i++){
+        for(int steps = 1; steps< 8;steps++){
+
+            int newRow = row + QueenMoves[i][0] * steps;
+            int newCol = col + QueenMoves[i][1] * steps;
+
+            if(newRow >= 0 && newRow <=7 && newCol >=1 && newCol <=8 ){
+                char target = board[newRow][newCol];
+
+                if(target == '.'){
+                     moves.push_back({newRow,newCol});
+                }
+                else if(islower(target)){
+                     moves.push_back({newRow,newCol});
+                     break;
+                }
+                
+                else if(isupper(target)){
+                    break;
+                }
+                else{
+                    break;
+                }
+
+            }
+
+        }
+    }
+return moves;
+};
+
+std::vector<Square> generateMovesWhiteKing(char (&board)[9][9], Square position){
+    std::vector<Square> moves;
+
+    int row = position.row;
+    int col = position.col;
+
+    int KingMoves[8][2] = {
+                          {0,1},
+                           {1,0},
+                           {-1,0},
+                           {0,-1},
+                           {1,1},
+                            {1,-1},
+                            {-1,1},
+                            {-1,-1}
+    }; 
+
+    for(int i = 0; i< 8; i++){
+        int newRow = row + KingMoves[i][0];
+        int newCol = col + KingMoves[i][1];
+
+        if(newRow >=0 && newRow <= 7 && newCol >=1 && newCol <=8){
+            
+            char target = board[newRow][newCol];
+            if(target == '.'){
+                moves.push_back({newRow,newCol});
+
+            }else if(islower(target)){
+                     moves.push_back({newRow,newCol});
+                     break;
+            }else if(isupper(target)){
+                    break;
+            }else{
+                    break;
+                }
+
+        }
+    }
+
+    return moves;
+
+}
+
+
+
+//==============================================Black pieces==============================================
+
+//BELOW THIS ARE THE BLACK PIECE MOVES
+
+std::vector<Square> generateBlackPawnMoves(char (&board)[9][9],Square position){
+    std::vector<Square> moves;
+
+     int forward = position.row +1;
+     int doubleForward = position.row + 2;
+
+    //Movements    
+    if(board[forward][position.col] == '.'){
+    
+    moves.push_back({forward,position.col});
+
+        if(board[doubleForward][position.col] == '.' && position.row == 1){
+             moves.push_back({doubleForward, position.col});
+        }
+   }
+    // Capturing moves
+
+    // Check left diagonal
+    if(position.col < 8){
+            if(isupper(board[forward][position.col+1])){
+            moves.push_back({forward,position.col+1});
+        }
+    }
+   
+
+    //Check right diagonal
+    if(position.col > 1){
+            if(isupper(board[forward][position.col-1])){
+            moves.push_back({forward,position.col-1});
+        }
+    }
+    
+    return moves;
+}
 
 
