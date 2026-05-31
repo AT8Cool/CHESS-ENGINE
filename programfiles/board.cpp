@@ -6,7 +6,7 @@
 
 #include<iostream>
 #include "position.h"
-// #include "position.cpp"
+
 
 using namespace std;
 
@@ -17,12 +17,6 @@ struct Move{
     int toCol;
 
 };
-
-
-
-
-
-
 
 void printBoard(char (&board)[9][9]){
 for(int i = 0; i< 9; i++){

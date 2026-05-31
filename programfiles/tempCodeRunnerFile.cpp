@@ -1,9 +1,7 @@
-#include <iostream>
+
 #include "board.h"
 #include "position.h"
 #include "genmoves.h"
-
-
 int main(){
 
    char board[9][9] =
@@ -21,7 +19,6 @@ int main(){
 
 Square pawn = convertSquare("e2");
 auto moves = generateWhitePawnMoves(board,pawn);
-
 
 
 }
