@@ -7,6 +7,9 @@ are the best or not. i.e It doesnt matter your king ends up in  check or vulener
 
 */
 #include "genmoves.h"
+//==============================================White pieces==============================================
+//BELOW THIS ARE THE WHITE PIECE MOVES
+//WHITE PAWN MOVES
 std::vector<Square> generateWhitePawnMoves(char (&board)[9][9],Square position){
     std::vector<Square> moves;
 
@@ -42,7 +45,7 @@ std::vector<Square> generateWhitePawnMoves(char (&board)[9][9],Square position){
     return moves;
 }
 
-
+//WHITE KNIGHT MOVES
 std::vector<Square> generateWhiteKnightMoves(char (&board)[9][9],Square position){
     std::vector<Square> moves;
     
@@ -76,7 +79,7 @@ std::vector<Square> generateWhiteKnightMoves(char (&board)[9][9],Square position
     return moves;
 
 }
-
+//WHITE BISHOP MOVES
 std::vector<Square> generateWhiteBishopMoves(char (&board)[9][9], Square position){
     std::vector<Square> moves;
 
@@ -125,6 +128,7 @@ return moves;
 
 }
 
+//WHITE ROOK MOVES
 std::vector<Square> generateWhiteRookMoves(char (&board)[9][9], Square position){
     std::vector<Square> moves;
     
@@ -166,6 +170,7 @@ std::vector<Square> generateWhiteRookMoves(char (&board)[9][9], Square position)
 return moves;
 };
 
+//WHITE QUEEN MOVES
 std::vector<Square> generateWhiteQueenMoves(char (&board)[9][9], Square position){
     std::vector<Square> moves;
 
@@ -215,7 +220,8 @@ std::vector<Square> generateWhiteQueenMoves(char (&board)[9][9], Square position
 return moves;
 };
 
-std::vector<Square> generateMovesWhiteKing(char (&board)[9][9], Square position){
+//WHITE KING MOVES
+std::vector<Square> generateWhiteKingMoves(char (&board)[9][9], Square position){
     std::vector<Square> moves;
 
     int row = position.row;
@@ -244,12 +250,10 @@ std::vector<Square> generateMovesWhiteKing(char (&board)[9][9], Square position)
 
             }else if(islower(target)){
                      moves.push_back({newRow,newCol});
-                     break;
+                     
             }else if(isupper(target)){
-                    break;
-            }else{
-                    break;
-                }
+                    continue;
+            }
 
         }
     }
@@ -263,7 +267,7 @@ std::vector<Square> generateMovesWhiteKing(char (&board)[9][9], Square position)
 //==============================================Black pieces==============================================
 
 //BELOW THIS ARE THE BLACK PIECE MOVES
-
+//BLACK PAWN MOVES
 std::vector<Square> generateBlackPawnMoves(char (&board)[9][9],Square position){
     std::vector<Square> moves;
 
@@ -298,5 +302,222 @@ std::vector<Square> generateBlackPawnMoves(char (&board)[9][9],Square position){
     
     return moves;
 }
+
+// BLACK KNIGHT MOVES
+std::vector<Square> generateBlackKnightMoves(char (&board)[9][9],Square position){
+    std::vector<Square> moves;
+    
+    int row = position.row;
+    int col = position.col;
+
+    int knightMoves[8][2] ={
+
+        {2,1},
+        {2,-1},
+        {-2, 1},
+        {-2,-1},
+
+        {1,2},
+        {1,-2},
+        {-1,2},
+        {-1,-2}
+
+    };
+
+    for(int i = 0; i< 8; i++){
+        int newRow = row + knightMoves[i][0];
+        int newCol = col + knightMoves[i][1];
+
+        if(newRow >= 0 && newRow <=7 and newCol >=1 and newCol <= 8 && !islower(board[newRow][newCol])){
+            
+            moves.push_back({newRow,newCol});
+
+        }
+    }
+    return moves;
+
+}
+
+//BLACK BISHOP MOVES
+
+std::vector<Square> generateBlackBishopMoves(char (&board)[9][9], Square position){
+    std::vector<Square> moves;
+
+    int BishopMoves[4][2] = {
+        {1,1},
+        {1,-1},
+        {-1,1},
+        {-1,-1}
+    };
+
+    for(int i = 0; i <4; i++){
+        int row = position.row;
+        int col = position.col;
+
+        for(int steps = 1; steps<8; steps++){
+
+            int newRow = row + BishopMoves[i][0] * steps;
+            int newCol = col + BishopMoves[i][1] * steps;
+
+        
+            
+            if(newRow <= 7 && newRow >=0 && newCol >= 1 && newCol <= 8 ){
+            
+                char target = board[newRow][newCol];
+
+                if(target == '.'){
+                     moves.push_back({newRow,newCol});
+                }
+                else if(isupper(target)){
+                     moves.push_back({newRow,newCol});
+                     break;
+                }
+                
+                else if(islower(target)){
+                    break;
+                }
+                else{
+                    break;
+                }
+            }
+
+        }
+
+    }
+return moves;
+
+}
+
+//BLACK ROOK MOVES
+std::vector<Square> generateBlackRookMoves(char (&board)[9][9], Square position){
+    std::vector<Square> moves;
+    
+    int RookMoves[4][2] = {{0,1},
+                           {1,0},
+                           {-1,0},
+                           {0,-1}
+                            };
+    int row = position.row;
+    int col = position.col;
+
+    for(int i = 0; i< 4; i++){
+        for(int steps = 1; steps < 8; steps++){
+            int newRow = row + RookMoves[i][0] * steps;
+            int newCol = col + RookMoves[i][1] * steps;
+
+            if(newRow <= 7 && newRow >= 0 && newCol >=1 && newCol <= 8){
+                char target = board[newRow][newCol];
+
+                if(target == '.'){
+                     moves.push_back({newRow,newCol});
+                }
+                else if(isupper(target)){
+                     moves.push_back({newRow,newCol});
+                     break;
+                }
+                
+                else if(islower(target)){
+                    break;
+                }
+                else{
+                    break;
+                }
+            }
+
+        }
+
+    }
+return moves;
+};
+
+//BLACK QUEEN MOVES
+std::vector<Square> generateMovesBlackQueen(char (&board)[9][9], Square position){
+    std::vector<Square> moves;
+
+    int row = position.row;
+    int col = position.col;
+
+    int QueenMoves[8][2] = {
+                          {0,1},
+                           {1,0},
+                           {-1,0},
+                           {0,-1},
+                           {1,1},
+                            {1,-1},
+                            {-1,1},
+                            {-1,-1}
+    };
+
+
+    for(int i = 0; i <8; i++){
+        for(int steps = 1; steps< 8;steps++){
+
+            int newRow = row + QueenMoves[i][0] * steps;
+            int newCol = col + QueenMoves[i][1] * steps;
+
+            if(newRow >= 0 && newRow <=7 && newCol >=1 && newCol <=8 ){
+                char target = board[newRow][newCol];
+
+                if(target == '.'){
+                     moves.push_back({newRow,newCol});
+                }
+                else if(isupper(target)){
+                     moves.push_back({newRow,newCol});
+                     break;
+                }
+                
+                else if(islower(target)){
+                    break;
+                }
+                else{
+                    break;
+                }
+
+            }
+
+        }
+    }
+return moves;
+};
+
+//BLACK KING MOVES
+
+std::vector<Square> generateBlackKingMoves(char (&board)[9][9], Square position){
+    std::vector<Square> moves;
+
+    int row = position.row;
+    int col = position.col;
+
+    int KingMoves[8][2] = {
+                          {0,1},
+                           {1,0},
+                           {-1,0},
+                           {0,-1},
+                           {1,1},
+                            {1,-1},
+                            {-1,1},
+                            {-1,-1}
+    }; 
+
+    for(int i = 0; i< 8; i++){
+        int newRow = row + KingMoves[i][0];
+        int newCol = col + KingMoves[i][1];
+
+        if(newRow >=0 && newRow <= 7 && newCol >=1 && newCol <=8){
+            
+            char target = board[newRow][newCol];
+            if(target == '.'){
+                moves.push_back({newRow,newCol});
+
+            }else if(isupper(target)){
+                     moves.push_back({newRow,newCol});
+                     
+            }
+    }
+    }
+    return moves;
+
+}
+
 
 
