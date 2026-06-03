@@ -3,9 +3,12 @@
 
 void makeMove(Position &position, Move move){
     char piece = position.board[move.fromRow][move.fromCol];
+    
 
     position.board[move.fromRow][move.fromCol] = '.';
     position.board[move.toRow][move.toCol] = piece;
+
+
 }
 
 void switchSideToMove(Position & position){
@@ -16,6 +19,15 @@ void switchSideToMove(Position & position){
     else{
         position.sideToMove = White;
     }
+}
+
+void undoMove(Position &position, Move move){
+    char piece = position.board[move.toRow][move.toCol];
+
+    position.board[move.toRow][move.toCol] = move.capturedPiece;
+    position.board[move.fromRow][move.fromCol] = piece;
+
+    
 }
 
 std::vector<Move> generateAllMoves(Position &position)
@@ -44,7 +56,7 @@ std::vector<Move> generateAllWhiteMoves(Position &position){
                         auto pawnMoves = generateWhitePawnMoves(position.board,Position);
                         
                       for(auto destination : pawnMoves){
-                          Move Plays = {Position.row,Position.col,destination.row,destination.col};
+                        Move Plays = {Position.row,Position.col,destination.row,destination.col, position.board[destination.row][destination.col]};
                          allMoves.push_back(Plays);
                       }
                      
@@ -54,7 +66,7 @@ std::vector<Move> generateAllWhiteMoves(Position &position){
                         auto rookMoves = generateWhiteRookMoves(position.board,Position);
                         
                       for(auto destination : rookMoves){
-                          Move Plays = {Position.row,Position.col, destination.row,destination.col};
+                          Move Plays = {Position.row,Position.col,destination.row,destination.col, position.board[destination.row][destination.col]};
                          allMoves.push_back(Plays);
                       }
                      
@@ -63,7 +75,7 @@ std::vector<Move> generateAllWhiteMoves(Position &position){
                         auto knightMoves = generateWhiteKnightMoves(position.board,Position);
                         
                       for(auto destination : knightMoves){
-                          Move Plays = {Position.row,Position.col, destination.row,destination.col};
+                          Move Plays = {Position.row,Position.col,destination.row,destination.col, position.board[destination.row][destination.col]};
                          allMoves.push_back(Plays);
                       }
                      
@@ -72,7 +84,7 @@ std::vector<Move> generateAllWhiteMoves(Position &position){
                         auto bishopMoves = generateWhiteBishopMoves(position.board,Position);
                         
                       for(auto destination : bishopMoves){
-                          Move Plays = {Position.row,Position.col, destination.row,destination.col};
+                          Move Plays = {Position.row,Position.col,destination.row,destination.col, position.board[destination.row][destination.col]};
                          allMoves.push_back(Plays);
                       }
                      
@@ -81,7 +93,7 @@ std::vector<Move> generateAllWhiteMoves(Position &position){
                         auto queenMoves = generateWhiteQueenMoves(position.board,Position);
                         
                       for(auto destination : queenMoves){
-                          Move Plays = {Position.row,Position.col, destination.row,destination.col};
+                          Move Plays = {Position.row,Position.col,destination.row,destination.col, position.board[destination.row][destination.col]};
                          allMoves.push_back(Plays);
                       }
                      
@@ -90,7 +102,7 @@ std::vector<Move> generateAllWhiteMoves(Position &position){
                         auto kingMoves = generateWhiteKingMoves(position.board,Position);
                         
                       for(auto destination : kingMoves){
-                          Move Plays = {Position.row,Position.col, destination.row,destination.col};
+                          Move Plays = {Position.row,Position.col,destination.row,destination.col, position.board[destination.row][destination.col]};
                          allMoves.push_back(Plays);
                       }
                      
@@ -124,7 +136,7 @@ std::vector<Move> generateAllBlackMoves(Position &position){
                         auto pawnMoves = generateBlackPawnMoves(position.board,Position);
                         
                       for(auto destination : pawnMoves){
-                          Move Plays = {Position.row,Position.col,destination.row,destination.col};
+                          Move Plays = {Position.row,Position.col,destination.row,destination.col, position.board[destination.row][destination.col]};
                          allMoves.push_back(Plays);
                       }
                      
@@ -134,7 +146,7 @@ std::vector<Move> generateAllBlackMoves(Position &position){
                         auto rookMoves = generateBlackRookMoves(position.board,Position);
                         
                       for(auto destination : rookMoves){
-                          Move Plays = {Position.row,Position.col, destination.row,destination.col};
+                          Move Plays = {Position.row,Position.col,destination.row,destination.col, position.board[destination.row][destination.col]};
                          allMoves.push_back(Plays);
                       }
                      
@@ -143,7 +155,7 @@ std::vector<Move> generateAllBlackMoves(Position &position){
                         auto knightMoves = generateBlackKnightMoves(position.board,Position);
                         
                       for(auto destination : knightMoves){
-                          Move Plays = {Position.row,Position.col, destination.row,destination.col};
+                          Move Plays = {Position.row,Position.col,destination.row,destination.col, position.board[destination.row][destination.col]};
                          allMoves.push_back(Plays);
                       }
                      
@@ -152,7 +164,7 @@ std::vector<Move> generateAllBlackMoves(Position &position){
                         auto bishopMoves = generateBlackBishopMoves(position.board,Position);
                         
                       for(auto destination : bishopMoves){
-                          Move Plays = {Position.row,Position.col, destination.row,destination.col};
+                          Move Plays = {Position.row,Position.col,destination.row,destination.col, position.board[destination.row][destination.col]};
                          allMoves.push_back(Plays);
                       }
                      
@@ -161,7 +173,7 @@ std::vector<Move> generateAllBlackMoves(Position &position){
                         auto queenMoves = generateBlackQueenMoves(position.board,Position);
                         
                       for(auto destination : queenMoves){
-                          Move Plays = {Position.row,Position.col, destination.row,destination.col};
+                          Move Plays = {Position.row,Position.col,destination.row,destination.col, position.board[destination.row][destination.col]};
                          allMoves.push_back(Plays);
                       }
                      
@@ -170,7 +182,7 @@ std::vector<Move> generateAllBlackMoves(Position &position){
                         auto kingMoves = generateBlackKingMoves(position.board,Position);
                         
                       for(auto destination : kingMoves){
-                          Move Plays = {Position.row,Position.col, destination.row,destination.col};
+                          Move Plays = {Position.row,Position.col,destination.row,destination.col, position.board[destination.row][destination.col]};
                          allMoves.push_back(Plays);
                       }
                      
@@ -182,12 +194,9 @@ std::vector<Move> generateAllBlackMoves(Position &position){
         }
     }
 
-
-
-
+    
     return allMoves;
 }
-
 
 
 
