@@ -9,6 +9,12 @@ struct Square{
 
 };
 
+enum Color{
+    White,
+    Black
+};
+
+
 Square convertSquare(std::string square);
 
 

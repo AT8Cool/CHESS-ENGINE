@@ -431,7 +431,7 @@ return moves;
 };
 
 //BLACK QUEEN MOVES
-std::vector<Square> generateMovesBlackQueen(char (&board)[9][9], Square position){
+std::vector<Square> generateBlackQueenMoves(char (&board)[9][9], Square position){
     std::vector<Square> moves;
 
     int row = position.row;
