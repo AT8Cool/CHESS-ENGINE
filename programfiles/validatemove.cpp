@@ -95,12 +95,12 @@ std::vector<Move> generateLegalMoves(Position &position){
 
 }
 
-bool isCheckMate(Position &position, Color side){
+bool isCheckmate(Position &position){
     return isKingInCheck(position, position.sideToMove)
     &&generateLegalMoves(position).empty();
 }
 
-bool isCheckMate(Position &position, Color side){
+bool isStalemate(Position &position, Color side){
     return !isKingInCheck(position, position.sideToMove)
     &&generateLegalMoves(position).empty();
 }

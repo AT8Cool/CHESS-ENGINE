@@ -10,6 +10,8 @@
 Square kingSquareFinder(Position &position, Color sideToMove);
 Square Location(Position &position, char piece);
 bool isKingInCheck(Position& position, Color side);
+bool isCheckmate(Position &position);
+bool isStalemate(Position &position);
 std::vector<Move> generateLegalMoves(Position &position);
 
 
