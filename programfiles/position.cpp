@@ -6,33 +6,6 @@ Undo move
 
 */
 
-
-// enum PieceType{
-//     Pawn,
-//     Rook,
-//     Knight,
-//     Bishop,
-//     Queen,
-//     King
-// };
-
-
-// PieceType piece = Pawn;
-// PieceType piece = Rook;
-// PieceType piece = Knight;
-// PieceType piece = Bishop;
-// PieceType piece = King;
-// PieceType piece = Queen;
-
-// enum Color{
-//     White,
-//     Black
-// };
-
-// Color sideToMove = White;
-// Color sideToMove = Black;
-
-
 #include "position.h"
 
 

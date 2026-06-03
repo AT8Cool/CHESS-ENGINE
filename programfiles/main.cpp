@@ -4,81 +4,55 @@
 #include "genmoves.h"
 #include "makemove.h"
 
-void printMoves(std::vector<Square> moves)
+int main()
 {
-    for(auto move : moves)
+    Position position;
+
+    position.sideToMove = White;
+
+    char board[9][9] =
     {
-        std::cout << move.row
-                  << " "
-                  << move.col
-                  << '\n';
+        {'8','r','n','b','q','k','b','n','r'},
+        {'7','p','p','p','p','p','p','p','p'},
+        {'6','.','.','.','.','.','.','.','.'},
+        {'5','.','.','.','.','.','.','.','.'},
+        {'4','.','.','.','.','.','.','.','.'},
+        {'3','.','.','.','.','.','.','.','.'},
+        {'2','P','P','P','P','P','P','P','P'},
+        {'1','R','N','B','Q','K','B','N','R'},
+        {' ','a','b','c','d','e','f','g','h'},
+    };
+
+    // Copy board into Position
+    for(int row = 0; row < 9; row++)
+    {
+        for(int col = 0; col < 9; col++)
+        {
+            position.board[row][col] = board[row][col];
+        }
     }
-}
 
-int main(){
+    std::cout << "Before Move:\n";
+    printBoard(position.board);
 
-char board[9][9] =
-{
-    {'8','r','n','b','q','k','b','n','r'},
-    {'7','p','p','p','p','p','p','p','p'},
-    {'6','.','.','.','.','.','.','.','.'},
-    {'5','.','.','.','.','.','.','.','.'},
-    {'4','.','.','.','.','.','.','.','.'},
-    {'3','.','.','.','.','.','.','.','.'},
-    {'2','P','P','P','P','P','P','P','P'},
-    {'1','R','N','B','Q','K','B','N','R'},
-    {' ','a','b','c','d','e','f','g','h'},
-};
+    Move move = {6,5,4,5}; // e2 -> e4
 
-Square pawn = convertSquare("e2");
-// auto moves = generateWhitePawnMoves(board,pawn);
+    makeMove(position, move);
+    switchSideToMove(position);
 
-// auto moves =
-//     generateWhiteRookMoves(
-//         board,
-//         convertSquare("e4")
-//     );
+    std::cout << "\nAfter Move:\n";
+    printBoard(position.board);
 
-// printMoves(moves);
+    std::vector<Move> allMoves;
 
-// std::cout << moves.size() << '\n';
-
-Move move = {6,5,4,5};
-
-printBoard(board);
+    allMoves = generateAllMoves(position);
 
 
-makeMove(board,move);
+    std::cout << "\nMove Count: "
+              << allMoves.size()
+              << "\n";
 
-printBoard(board);
+    std::cout<< position.sideToMove<< "\n";
 
-auto allthemoves = generateAllWhiteMoves(board);
-Color sideToMove = White;
-
-// std:: cout<< allthemoves.size() << "\n";
-
-
-std::vector<Move> allMoves;
-if(sideToMove == White){
-    allMoves = generateAllWhiteMoves(board);
-}else{
-    allMoves = generateAllBlackMoves(board);
-}
-
-for(auto move : allMoves)
-{
-    std::cout
-        << move.fromRow << ","
-        << move.fromCol
-        << " -> "
-        << move.toRow << ","
-        << move.toCol
-        << "\n";
-}
-
-
-std::cout<< allMoves.size() << "\n";
-
-
-
+    return 0;
 }

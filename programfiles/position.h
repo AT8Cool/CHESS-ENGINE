@@ -14,6 +14,11 @@ enum Color{
     Black
 };
 
+struct Position{
+    char board[9][9];
+    Color sideToMove;
+};
+
 
 Square convertSquare(std::string square);
 
