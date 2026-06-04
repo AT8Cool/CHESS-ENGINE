@@ -86,7 +86,7 @@ int main()
 
     std::cout<<evaluate(position)<<"\n";
 
-Move bestMove = bestMoveFinder(position);
+Move bestMove = bestMoveFinder(position, 4);
 
 std::cout
     << bestMove.fromRow << ","

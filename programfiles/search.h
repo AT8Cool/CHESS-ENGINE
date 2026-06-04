@@ -6,7 +6,7 @@
 #include "validatemove.h"
 #include "makemove.h"
 #include "position.h"
-Move bestMoveFinder(Position &position);
+Move bestMoveFinder(Position &position, int depth);
 int minimax(Position &position, int depth);
 
 #endif

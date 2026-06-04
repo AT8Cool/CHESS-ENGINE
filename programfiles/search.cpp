@@ -23,16 +23,16 @@ int minimax(Position &position, int depth){
     auto moves = generateLegalMoves(position);
 
     if(moves.empty()){
-        std::cout<< "Terminal Position \n";
+        
         if(isKingInCheck(position,position.sideToMove)){
-            std::cout<< "CHECKMATE\n";
+        
             if(position.sideToMove == White){
                 return -100000;
             }else{
                 return 100000;
             }
         }
-        std::cout<< "STALEMATE\n";
+       
         return 0;
     }
 
@@ -83,7 +83,7 @@ if(position.sideToMove == White){
     
 
 
-Move bestMoveFinder(Position &position){
+Move bestMoveFinder(Position &position, int depth){
       auto moves = generateLegalMoves(position);
       if(moves.empty()){
         return{-1,-1,-1,-1,'.'};
@@ -95,7 +95,7 @@ Move bestMoveFinder(Position &position){
                     makeMove(position,move);
                     switchSideToMove(position);
 
-                int score = minimax(position,2);
+                int score = minimax(position,depth-1);
                 switchSideToMove(position); 
                 undoMove(position, move);
 
@@ -114,7 +114,7 @@ Move bestMoveFinder(Position &position){
                     makeMove(position,move);
                     switchSideToMove(position);
 
-                int score = minimax(position,2);
+                int score = minimax(position,depth-1);
                 switchSideToMove(position); 
                 undoMove(position, move);
 
