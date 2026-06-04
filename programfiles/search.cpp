@@ -15,8 +15,11 @@ evaluate
 
 
 #include "search.h"
+ int nodes = 0;
+int minimax(Position &position, int depth,int alpha, int beta){
+   
+    nodes++;
 
-int minimax(Position &position, int depth){
     if(depth ==0){
         return evaluate(position);
     }
@@ -36,7 +39,7 @@ int minimax(Position &position, int depth){
         return 0;
     }
 
-
+//WHITE NODE
 if(position.sideToMove == White){
        int bestScore = INT_MIN;
 
@@ -45,13 +48,19 @@ if(position.sideToMove == White){
              makeMove(position,move);
              switchSideToMove(position);
 
-             int score = minimax(position, depth-1);
+             int score = minimax(position, depth-1,alpha,beta);
 
              switchSideToMove(position);
              undoMove(position,move);
 
              if(score > bestScore){
                 bestScore = score;
+             }
+             if(score > alpha){
+                alpha = score;
+             }
+             if(alpha >=beta){
+                break;
              }
              
         }
@@ -67,21 +76,25 @@ if(position.sideToMove == White){
              makeMove(position,move);
              switchSideToMove(position);
 
-             int score = minimax(position, depth-1);
+             int score = minimax(position, depth-1,alpha,beta);
 
              switchSideToMove(position);
              undoMove(position,move);
 
-             if(score < bestScore)
-             {
+            if(score < bestScore){
                 bestScore = score;
+             }
+             if(score < beta)
+             {
+                beta = score;
+             }
+             if(alpha >= beta){
+                break;
              }
         }
         return bestScore;
 
     }
-    
-
 
 Move bestMoveFinder(Position &position, int depth){
       auto moves = generateLegalMoves(position);
@@ -95,7 +108,7 @@ Move bestMoveFinder(Position &position, int depth){
                     makeMove(position,move);
                     switchSideToMove(position);
 
-                int score = minimax(position,depth-1);
+                int score = minimax(position,depth-1, INT_MIN, INT_MAX);
                 switchSideToMove(position); 
                 undoMove(position, move);
 
@@ -114,7 +127,7 @@ Move bestMoveFinder(Position &position, int depth){
                     makeMove(position,move);
                     switchSideToMove(position);
 
-                int score = minimax(position,depth-1);
+                int score = minimax(position,depth-1,INT_MIN,INT_MAX);
                 switchSideToMove(position); 
                 undoMove(position, move);
 

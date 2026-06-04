@@ -9,6 +9,7 @@
 #include "evaluate.h"
 #include "search.h"
 
+
 int main()
 {
     Position position;
@@ -86,7 +87,9 @@ int main()
 
     std::cout<<evaluate(position)<<"\n";
 
+nodes = 0;
 Move bestMove = bestMoveFinder(position, 4);
+
 
 std::cout
     << bestMove.fromRow << ","
@@ -96,7 +99,10 @@ std::cout
     << bestMove.toCol
     << "\n";
 
-
+std::cout
+    << "Nodes searched: "
+    << nodes
+    << "\n";
 
 
     return 0;

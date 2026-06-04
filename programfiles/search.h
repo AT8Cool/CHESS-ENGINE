@@ -7,6 +7,8 @@
 #include "makemove.h"
 #include "position.h"
 Move bestMoveFinder(Position &position, int depth);
-int minimax(Position &position, int depth);
+int minimax(Position &position, int depth,int alpha,int beta);
+
+extern int nodes;
 
 #endif
