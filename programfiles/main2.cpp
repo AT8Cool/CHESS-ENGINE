@@ -6,22 +6,24 @@
 #include "genmoves.h"
 #include "makemove.h"
 #include "validatemove.h"
+#include "evaluate.h"
+#include "search.h"
 
 int main()
 {
     Position position;
 
-    position.sideToMove = White;
+    position.sideToMove = Black;
 
     char board[9][9] =
     {
-        {'8','.','.','.','.','r','.','.','.'},
+        {'8','.','.','.','.','.','.','.','.'},
         {'7','.','.','.','.','.','.','.','.'},
-        {'6','.','.','.','.','.','.','.','.'},
+        {'6','.','.','.','.','k','.','.','.'},
         {'5','.','.','.','.','.','.','.','.'},
-        {'4','.','R','.','.','.','.','.','.'},
-        {'3','.','.','.','.','.','.','.','.'},
-        {'2','.','.','.','.','.','.','.','.'},
+        {'4','.','.','.','.','.','.','.','.'},
+        {'3','.','.','.','p','.','.','.','.'},
+        {'2','.','.','.','.','R','.','.','.'},
         {'1','.','.','.','.','K','.','.','.'},
         {' ','a','b','c','d','e','f','g','h'},
     };
@@ -36,10 +38,10 @@ int main()
 
     printBoard(position.board);
 
-    std::cout << "\nWhite king location:\n";
+    std::cout << "\n Whiteking location:\n";
 
     Square king =
-        kingSquareFinder(position, White);
+        kingSquareFinder(position,White);
 
     std::cout
         << king.row
@@ -81,6 +83,21 @@ int main()
             << move.toCol
             << "\n";
     }
+
+    std::cout<<evaluate(position)<<"\n";
+
+Move bestMove = bestMoveFinder(position);
+
+std::cout
+    << bestMove.fromRow << ","
+    << bestMove.fromCol
+    << " -> "
+    << bestMove.toRow << ","
+    << bestMove.toCol
+    << "\n";
+
+
+
 
     return 0;
 }
