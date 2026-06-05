@@ -12,6 +12,7 @@ struct Move
     int toCol;
 
     char capturedPiece;
+    char promotionPiece = '.';
 };
 
 void makeMove(Position &position, Move move);

@@ -2,11 +2,17 @@
 
 
 void makeMove(Position &position, Move move){
-    char piece = position.board[move.fromRow][move.fromCol];
-    
-
-    position.board[move.fromRow][move.fromCol] = '.';
-    position.board[move.toRow][move.toCol] = piece;
+        char piece = position.board[move.fromRow][move.fromCol];
+            position.board[move.fromRow][move.fromCol] = '.';
+                if(move.promotionPiece != '.')
+                {
+                    position.board[move.toRow][move.toCol] =
+                        move.promotionPiece;
+                }
+                else
+                {
+                    position.board[move.toRow][move.toCol] = piece;
+                }
 
 
 }
@@ -21,13 +27,28 @@ void switchSideToMove(Position & position){
     }
 }
 
-void undoMove(Position &position, Move move){
+void undoMove(Position &position, Move move)
+{
     char piece = position.board[move.toRow][move.toCol];
 
-    position.board[move.toRow][move.toCol] = move.capturedPiece;
-    position.board[move.fromRow][move.fromCol] = piece;
+    position.board[move.toRow][move.toCol] =
+        move.capturedPiece;
 
-    
+    if(move.promotionPiece != '.')
+    {
+       if(isupper(move.promotionPiece))
+{
+    position.board[move.fromRow][move.fromCol] = 'P';
+}
+else
+{
+    position.board[move.fromRow][move.fromCol] = 'p';
+}
+    }
+    else
+    {
+        position.board[move.fromRow][move.fromCol] = piece;
+    }
 }
 
 std::vector<Move> generateAllMoves(Position &position)
@@ -56,8 +77,34 @@ std::vector<Move> generateAllWhiteMoves(Position &position){
                         auto pawnMoves = generateWhitePawnMoves(position.board,Position);
                         
                       for(auto destination : pawnMoves){
-                        Move Plays = {Position.row,Position.col,destination.row,destination.col, position.board[destination.row][destination.col]};
-                         allMoves.push_back(Plays);
+                        Move Plays = {Position.row,
+                            Position.col,
+                            destination.row,
+                            destination.col, 
+                            position.board[destination.row][destination.col]};
+                            //PROMOTION
+                            if(destination.row == 0)
+                            {
+                                        Move queenMove = Plays;
+                                        queenMove.promotionPiece = 'Q';
+                                        allMoves.push_back(queenMove);
+
+                                        Move rookMove = Plays;
+                                        rookMove.promotionPiece = 'R';
+                                        allMoves.push_back(rookMove);
+
+                                        Move bishopMove = Plays;
+                                        bishopMove.promotionPiece = 'B';
+                                        allMoves.push_back(bishopMove);
+
+                                        Move knightMove = Plays;
+                                        knightMove.promotionPiece = 'N';
+                                        allMoves.push_back(knightMove);
+                                    }
+                                    else
+                                    {
+                                        allMoves.push_back(Plays);
+                                    }
                       }
                      
                     }
@@ -136,8 +183,36 @@ std::vector<Move> generateAllBlackMoves(Position &position){
                         auto pawnMoves = generateBlackPawnMoves(position.board,Position);
                         
                       for(auto destination : pawnMoves){
-                          Move Plays = {Position.row,Position.col,destination.row,destination.col, position.board[destination.row][destination.col]};
-                         allMoves.push_back(Plays);
+                          Move Plays = {Position.row,
+                            Position.col,
+                            destination.row,
+                            destination.col, 
+                            position.board[destination.row][destination.col]};
+
+                            if(destination.row == 7)
+                            {
+                                        Move queenMove = Plays;
+                                        queenMove.promotionPiece = 'q';
+                                        allMoves.push_back(queenMove);
+
+                                        Move rookMove = Plays;
+                                        rookMove.promotionPiece = 'r';
+                                        allMoves.push_back(rookMove);
+
+                                        Move bishopMove = Plays;
+                                        bishopMove.promotionPiece = 'b';
+                                        allMoves.push_back(bishopMove);
+
+                                        Move knightMove = Plays;
+                                        knightMove.promotionPiece = 'n';
+                                        allMoves.push_back(knightMove);
+                                    }
+                                    else
+                                    {
+                                        allMoves.push_back(Plays);
+                                    }
+
+    
                       }
                      
                     }

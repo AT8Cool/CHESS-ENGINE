@@ -16,18 +16,18 @@ int main()
 
     position.sideToMove = Black;
 
-    char board[9][9] =
-    {
-        {'8','.','.','.','.','.','.','.','.'},
-        {'7','.','.','.','.','.','.','.','.'},
-        {'6','.','.','.','.','k','.','.','.'},
-        {'5','.','.','.','.','.','.','.','.'},
-        {'4','.','.','.','.','.','.','.','.'},
-        {'3','.','.','.','p','.','.','.','.'},
-        {'2','.','.','.','.','R','.','.','.'},
-        {'1','.','.','.','.','K','.','.','.'},
-        {' ','a','b','c','d','e','f','g','h'},
-    };
+char board[9][9] =
+{
+    {'8','.','.','.','.','k','.','.','.'},
+    {'7','P','.','.','.','.','.','.','.'},
+    {'6','.','.','.','.','.','.','.','.'},
+    {'5','.','.','.','.','.','.','.','.'},
+    {'4','.','.','.','.','.','.','.','.'},
+    {'3','.','.','.','.','.','.','.','.'},
+    {'2','.','.','.','.','.','.','.','p'},
+    {'1','.','.','.','.','K','.','.','.'},
+    {' ','a','b','c','d','e','f','g','h'},
+};
 
     for(int row = 0; row < 9; row++)
     {
@@ -53,7 +53,7 @@ int main()
     std::cout << "\nKing in check?\n";
 
     std::cout
-        << isKingInCheck(position, White)
+        << isKingInCheck(position, Black)
         << "\n";
 
     auto pseudoMoves =
@@ -99,11 +99,46 @@ std::cout
     << bestMove.toCol
     << "\n";
 
+
+for(auto move : legalMoves)
+{
+    std::cout
+        << move.fromRow << ","
+        << move.fromCol << " -> "
+        << move.toRow << ","
+        << move.toCol
+        << " promotion="
+        << move.promotionPiece
+        << "\n";
+}
+
 std::cout
     << "Nodes searched: "
     << nodes
     << "\n";
 
+
+Move testMove = legalMoves[5];
+
+makeMove(position, testMove);
+
+std::cout << "\nAfter makeMove:\n";
+printBoard(position.board);
+
+undoMove(position, testMove);
+
+std::cout << "\nAfter undoMove:\n";
+printBoard(position.board);
+
+std::cout
+    << bestMove.fromRow << ","
+    << bestMove.fromCol
+    << " -> "
+    << bestMove.toRow << ","
+    << bestMove.toCol
+    << " promotion="
+    << bestMove.promotionPiece
+    << "\n";
 
     return 0;
 }

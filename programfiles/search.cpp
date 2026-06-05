@@ -80,6 +80,7 @@ std::sort(moves.begin(), moves.end(),
 if(position.sideToMove == White){
        int bestScore = INT_MIN;
 
+       
         for(auto move:moves){
 
              makeMove(position,move);
