@@ -14,7 +14,38 @@ evaluate
  */
 
 
+
 #include "search.h"
+#include <algorithm>
+
+int moveScore(Move move){
+    if(move.capturedPiece != '.'){
+        switch(move.capturedPiece){
+            case 'Q':
+            case 'q':
+                return 900;
+
+            case 'R':
+            case 'r':
+                return 500;
+            
+            case 'B':
+            case 'b':
+            case 'N':
+            case 'n':
+                return 300;
+            
+            case 'P':
+            case 'p':
+                return 100;
+
+            default:
+                return 0;
+        }
+    }
+    return 0;
+}
+
  int nodes = 0;
 int minimax(Position &position, int depth,int alpha, int beta){
    
@@ -24,6 +55,12 @@ int minimax(Position &position, int depth,int alpha, int beta){
         return evaluate(position);
     }
     auto moves = generateLegalMoves(position);
+    // Move Ordering
+    
+std::sort(moves.begin(), moves.end(),
+        [](const Move& a,const Move& b){
+        return moveScore(a) > moveScore(b);
+    });
 
     if(moves.empty()){
         
@@ -98,6 +135,12 @@ if(position.sideToMove == White){
 
 Move bestMoveFinder(Position &position, int depth){
       auto moves = generateLegalMoves(position);
+    //Move Ordering
+      std::sort(moves.begin(), moves.end(),
+        [](const Move& a,const Move& b){
+        return moveScore(a) > moveScore(b);
+
+    });
       if(moves.empty()){
         return{-1,-1,-1,-1,'.'};
       } 
@@ -153,6 +196,8 @@ Move bestMoveFinder(Position &position, int depth){
                
 
 }
+
+
 
 
 
