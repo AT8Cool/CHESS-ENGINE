@@ -12,12 +12,21 @@ struct Move
     int toCol;
 
     char capturedPiece;
-    char promotionPiece = '.';
+    char promotionPiece;
+
+    bool oldWhiteKingMoved;
+    bool oldBlackKingMoved;
+
+    bool oldWhiteKingsideRookMoved;
+    bool oldWhiteQueensideRookMoved;
+
+    bool oldBlackKingsideRookMoved;
+    bool oldBlackQueensideRookMoved;
 };
 
-void makeMove(Position &position, Move move);
+void makeMove(Position &position, Move &move);
 void switchSideToMove(Position & position);
-void undoMove(Position &position, Move move);
+void undoMove(Position &position, Move &move);
 std::vector<Move> generateAllMoves(Position &position);
 std::vector<Move> generateAllWhiteMoves(Position &position);
 std::vector<Move> generateAllBlackMoves(Position &position);

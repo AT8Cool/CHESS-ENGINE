@@ -14,18 +14,18 @@ int main()
 {
     Position position;
 
-    position.sideToMove = Black;
+    position.sideToMove = White;
 
 char board[9][9] =
 {
     {'8','.','.','.','.','k','.','.','.'},
-    {'7','P','.','.','.','.','.','.','.'},
+    {'7','.','.','.','.','.','.','.','.'},
     {'6','.','.','.','.','.','.','.','.'},
     {'5','.','.','.','.','.','.','.','.'},
     {'4','.','.','.','.','.','.','.','.'},
     {'3','.','.','.','.','.','.','.','.'},
-    {'2','.','.','.','.','.','.','.','p'},
-    {'1','.','.','.','.','K','.','.','.'},
+    {'2','.','.','.','.','.','.','r','.'},
+    {'1','R','.','.','.','K','.','.','R'},
     {' ','a','b','c','d','e','f','g','h'},
 };
 
@@ -37,44 +37,122 @@ char board[9][9] =
         }
     }
 
-    printBoard(position.board);
+    // printBoard(position.board);
 
-    std::cout << "\n Whiteking location:\n";
+    // std::cout << "\n Whiteking location:\n";
 
-    Square king =
-        kingSquareFinder(position,White);
+    // Square king =
+    //     kingSquareFinder(position,White);
 
-    std::cout
-        << king.row
-        << " "
-        << king.col
-        << "\n";
+    // std::cout
+    //     << king.row
+    //     << " "
+    //     << king.col
+    //     << "\n";
 
-    std::cout << "\nKing in check?\n";
+    // std::cout << "\nKing in check?\n";
 
-    std::cout
-        << isKingInCheck(position, Black)
-        << "\n";
+    // std::cout
+    //     << isKingInCheck(position, White)
+    //     << "\n";
 
-    auto pseudoMoves =
-        generateAllMoves(position);
+    // auto pseudoMoves =
+    //     generateAllMoves(position);
 
-    auto legalMoves =
-        generateLegalMoves(position);
+    // auto legalMoves =
+    //     generateLegalMoves(position);
 
-    std::cout
-        << "\nPseudo Move Count: "
-        << pseudoMoves.size()
-        << "\n";
+    // std::cout
+    //     << "\nPseudo Move Count: "
+    //     << pseudoMoves.size()
+    //     << "\n";
 
-    std::cout
-        << "Legal Move Count: "
-        << legalMoves.size()
-        << "\n";
+    // std::cout
+    //     << "Legal Move Count: "
+    //     << legalMoves.size()
+    //     << "\n";
 
-    std::cout << "\nLegal Moves:\n";
+//     std::cout << "\nLegal Moves:\n";
 
-    for(auto move : legalMoves)
+//     for(auto move : legalMoves)
+//     {
+//         std::cout
+//             << move.fromRow << ","
+//             << move.fromCol
+//             << " -> "
+//             << move.toRow << ","
+//             << move.toCol
+//             << "\n";
+//     }
+
+//     std::cout<<evaluate(position)<<"\n";
+
+// nodes = 0;
+// Move bestMove = bestMoveFinder(position, 4);
+
+
+// std::cout
+//     << bestMove.fromRow << ","
+//     << bestMove.fromCol
+//     << " -> "
+//     << bestMove.toRow << ","
+//     << bestMove.toCol
+//     << "\n";
+
+
+// for(auto move : legalMoves)
+// {
+//     std::cout
+//         << move.fromRow << ","
+//         << move.fromCol << " -> "
+//         << move.toRow << ","
+//         << move.toCol
+//         << " promotion="
+//         << move.promotionPiece
+//         << "\n";
+// }
+
+// std::cout
+//     << "Nodes searched: "
+//     << nodes
+//     << "\n";
+
+
+// Move testMove = legalMoves[0];
+// Move testMove = {7,5,7,7,'.'};
+
+// makeMove(position, testMove);
+
+// std::cout << "\nAfter makeMove:\n";
+// printBoard(position.board);
+
+// undoMove(position, testMove);
+
+// std::cout << "\nAfter undoMove:\n";
+// printBoard(position.board);
+
+// std::cout
+//     << bestMove.fromRow << ","
+//     << bestMove.fromCol
+//     << " -> "
+//     << bestMove.toRow << ","
+//     << bestMove.toCol
+//     << " promotion="
+//     << bestMove.promotionPiece
+//     << "\n";
+
+//     std::cout << position.whiteKingsideRookMoved;
+
+printBoard(position.board);
+
+auto legalMoves = generateLegalMoves(position);
+
+std::cout << "\nCastling moves found:\n";
+
+for(auto move : legalMoves)
+{
+    if((move.fromRow == 7 && move.fromCol == 5 &&
+       (move.toCol == 7 || move.toCol == 3)))
     {
         std::cout
             << move.fromRow << ","
@@ -84,60 +162,64 @@ char board[9][9] =
             << move.toCol
             << "\n";
     }
-
-    std::cout<<evaluate(position)<<"\n";
-
-nodes = 0;
-Move bestMove = bestMoveFinder(position, 4);
-
-
-std::cout
-    << bestMove.fromRow << ","
-    << bestMove.fromCol
-    << " -> "
-    << bestMove.toRow << ","
-    << bestMove.toCol
-    << "\n";
-
-
-for(auto move : legalMoves)
-{
-    std::cout
-        << move.fromRow << ","
-        << move.fromCol << " -> "
-        << move.toRow << ","
-        << move.toCol
-        << " promotion="
-        << move.promotionPiece
-        << "\n";
 }
 
+std::cout << "\nBefore move:\n";
 std::cout
-    << "Nodes searched: "
-    << nodes
+    << "whiteKingMoved="
+    << position.whiteKingMoved
     << "\n";
 
+std::cout
+    << "whiteKingsideRookMoved="
+    << position.whiteKingsideRookMoved
+    << "\n";
 
-Move testMove = legalMoves[5];
+    Move testMove;
+if(!legalMoves.empty())
+{
+    testMove = legalMoves[0];
+}else{
+     std::cout << "No legal moves!\n";
+    return 0;
+}
 
-makeMove(position, testMove);
+makeMove(position,testMove);
 
 std::cout << "\nAfter makeMove:\n";
 printBoard(position.board);
 
-undoMove(position, testMove);
+std::cout
+    << "whiteKingMoved="
+    << position.whiteKingMoved
+    << "\n";
+
+std::cout
+    << "whiteKingsideRookMoved="
+    << position.whiteKingsideRookMoved
+    << "\n";
+
+undoMove(position,testMove);
 
 std::cout << "\nAfter undoMove:\n";
 printBoard(position.board);
 
 std::cout
-    << bestMove.fromRow << ","
-    << bestMove.fromCol
+    << "whiteKingMoved="
+    << position.whiteKingMoved
+    << "\n";
+
+std::cout
+    << "whiteKingsideRookMoved="
+    << position.whiteKingsideRookMoved
+    << "\n";
+std::cout
+    << "testMove: "
+    << testMove.fromRow << ","
+    << testMove.fromCol
     << " -> "
-    << bestMove.toRow << ","
-    << bestMove.toCol
-    << " promotion="
-    << bestMove.promotionPiece
+    << testMove.toRow << ","
+    << testMove.toCol
     << "\n";
 
     return 0;

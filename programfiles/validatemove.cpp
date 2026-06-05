@@ -75,12 +75,85 @@ for(auto move:moves){
 return false;
 };
 
+bool isCastleMove(const Move& move){
+
+    return(move.fromRow == 7 && 
+            move.fromCol == 5 && (move.toCol== 7 || move.toCol== 3))||
+    
+            (move.fromRow == 0 &&
+            move.fromCol == 5 && (move.toCol == 7 || move.toCol == 3));
+}
+
+
 std::vector<Move> generateLegalMoves(Position &position){
     std::vector<Move> legalMoves;
     auto pseudoMoves = generateAllMoves(position);
     Color side = position.sideToMove;
 
     for(auto move: pseudoMoves){
+        if(isCastleMove(move)){
+            if(isKingInCheck(position,side)){
+                continue;
+            }
+//Through Check White KingSide
+            if(move.fromRow == 7 && 
+                move.fromCol == 5 &&
+                move.toCol == 7){
+                    Position temp = position;
+
+                    temp.board[7][5] = '.';
+                    temp.board[7][6] = 'K';
+                    if(isKingInCheck(temp,White)){
+                        continue;
+                    }
+                }
+//Through Check White QueenSide
+            if(move.fromRow == 7 && 
+                move.fromCol == 5 &&
+                move.toCol == 3){
+                    Position temp = position;
+
+                    temp.board[7][5] = '.';
+                    temp.board[7][4] = 'K';
+                    if(isKingInCheck(temp,White)){
+                        continue;
+                    }
+                }    
+        
+
+
+        //Through Check Black KingSide
+
+        if(move.fromRow == 0 && 
+                move.fromCol == 5 &&
+                move.toCol == 7){
+                    Position temp = position;
+
+                    temp.board[0][5] = '.';
+                    temp.board[0][6] = 'k';
+                    if(isKingInCheck(temp,Black)){
+                        continue;
+                    }
+                }
+
+        
+
+        //Through Check Black QueenSide
+
+        if(move.fromRow == 0 && 
+                move.fromCol == 5 &&
+                move.toCol == 3){
+                    Position temp = position;
+
+                    temp.board[0][5] = '.';
+                    temp.board[0][4] = 'k';
+                    if(isKingInCheck(temp,Black)){
+                        continue;
+                    }
+                }
+        }
+
+            
         makeMove(position,move);
 
         if(!isKingInCheck(position, side)){
@@ -95,6 +168,8 @@ std::vector<Move> generateLegalMoves(Position &position){
 
 }
 
+
+
 bool isCheckmate(Position &position){
     return isKingInCheck(position, position.sideToMove)
     &&generateLegalMoves(position).empty();
@@ -104,3 +179,4 @@ bool isStalemate(Position &position, Color side){
     return !isKingInCheck(position, position.sideToMove)
     &&generateLegalMoves(position).empty();
 }
+

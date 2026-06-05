@@ -1,9 +1,94 @@
 #include "makemove.h"
 
 
-void makeMove(Position &position, Move move){
+void makeMove(Position &position, Move &move){
+
         char piece = position.board[move.fromRow][move.fromCol];
-            position.board[move.fromRow][move.fromCol] = '.';
+        
+            //Save castling righst for undo 
+                move.oldWhiteKingMoved = position.whiteKingMoved;
+                move.oldBlackKingMoved = position.blackKingMoved;
+
+                move.oldWhiteKingsideRookMoved = position.whiteKingsideRookMoved;
+                move.oldWhiteQueensideRookMoved = position.whiteQueensideRookMoved;
+
+                move.oldBlackKingsideRookMoved = position.blackKingsideRookMoved;
+                move.oldBlackQueensideRookMoved = position.blackQueensideRookMoved;
+
+
+            //Update castling rights
+            if(piece == 'K'){
+                position.whiteKingMoved = true;
+            }
+
+            if(piece == 'k'){
+                position.blackKingMoved = true;
+            }
+            if(piece == 'R'){
+                if(move.fromRow == 7 && move.fromCol==8){
+                    position.whiteKingsideRookMoved= true;
+                }
+
+                if(move.fromRow == 7 && move.fromCol==1){
+                    position.whiteQueensideRookMoved= true;
+                }
+
+            }
+            if(piece == 'r'){
+                if(move.fromRow == 0 && move.fromCol==8){
+                    position.blackKingsideRookMoved= true;
+                }
+
+                if(move.fromRow == 0 && move.fromCol==1){
+                    position.blackQueensideRookMoved= true;
+                }
+
+            }
+
+           
+            //Castling rights
+            //White Kingside Castling
+            if(piece == 'K' &&
+            move.fromRow == 7 &&
+            move.fromCol == 5 &&
+            move.toRow == 7 &&
+            move.toCol == 7)
+            {
+                position.board[7][8] = '.';
+                position.board[7][6] = 'R';
+            }
+            //White Queenside Castling
+            if(piece == 'K' &&
+                move.fromRow == 7 &&
+                move.fromCol == 5 &&
+                move.toRow == 7 &&
+                move.toCol == 3)
+                {
+                    position.board[7][1] = '.';
+                    position.board[7][4] = 'R';
+                }
+            //Black Kingside Castling
+            if(piece == 'k' &&
+            move.fromRow == 0 && move.fromCol == 5 &&
+            move.toRow == 0 && move.toCol == 7)
+            {
+                position.board[0][8] = '.';
+                position.board[0][6] = 'r';
+            }
+            //Black Queenside Castling
+            if(piece == 'k' &&
+                move.fromRow == 0 &&
+                move.fromCol == 5 &&
+                move.toRow == 0 &&
+                move.toCol == 3)
+                {
+                    position.board[0][1] = '.';
+                    position.board[0][4] = 'r';
+                }
+                //normal move
+
+                 position.board[move.fromRow][move.fromCol] = '.';
+                 //Promotion
                 if(move.promotionPiece != '.')
                 {
                     position.board[move.toRow][move.toCol] =
@@ -13,7 +98,6 @@ void makeMove(Position &position, Move move){
                 {
                     position.board[move.toRow][move.toCol] = piece;
                 }
-
 
 }
 
@@ -27,30 +111,97 @@ void switchSideToMove(Position & position){
     }
 }
 
-void undoMove(Position &position, Move move)
+void undoMove(Position &position, Move &move)
 {
-    char piece = position.board[move.toRow][move.toCol];
+    char piece =
+        position.board[move.toRow][move.toCol];
+     
 
+    // Restore castling rights
+    position.whiteKingMoved =
+        move.oldWhiteKingMoved;
+
+    position.blackKingMoved =
+        move.oldBlackKingMoved;
+
+    position.whiteKingsideRookMoved =
+        move.oldWhiteKingsideRookMoved;
+
+    position.whiteQueensideRookMoved =
+        move.oldWhiteQueensideRookMoved;
+
+    position.blackKingsideRookMoved =
+        move.oldBlackKingsideRookMoved;
+
+    position.blackQueensideRookMoved =
+        move.oldBlackQueensideRookMoved;
+
+    // Undo castling
+
+    // White kingside
+    if(move.fromRow == 7 &&
+       move.fromCol == 5 &&
+       move.toRow == 7 &&
+       move.toCol == 7)
+    {
+        position.board[7][6] = '.';
+        position.board[7][8] = 'R';
+    }
+
+    // White queenside
+    if(move.fromRow == 7 &&
+       move.fromCol == 5 &&
+       move.toRow == 7 &&
+       move.toCol == 3)
+    {
+        position.board[7][4] = '.';
+        position.board[7][1] = 'R';
+    }
+
+    // Black kingside
+    if(move.fromRow == 0 &&
+       move.fromCol == 5 &&
+       move.toRow == 0 &&
+       move.toCol == 7)
+    {
+        position.board[0][6] = '.';
+        position.board[0][8] = 'r';
+    }
+
+    // Black queenside
+    if(move.fromRow == 0 &&
+       move.fromCol == 5 &&
+       move.toRow == 0 &&
+       move.toCol == 3)
+    {
+        position.board[0][4] = '.';
+        position.board[0][1] = 'r';
+    }
+
+    // Remove moved piece
     position.board[move.toRow][move.toCol] =
         move.capturedPiece;
 
+    // Undo promotion
     if(move.promotionPiece != '.')
     {
-       if(isupper(move.promotionPiece))
-{
-    position.board[move.fromRow][move.fromCol] = 'P';
-}
-else
-{
-    position.board[move.fromRow][move.fromCol] = 'p';
-}
+        if(isupper(move.promotionPiece))
+        {
+            position.board[move.fromRow][move.fromCol] =
+                'P';
+        }
+        else
+        {
+            position.board[move.fromRow][move.fromCol] =
+                'p';
+        }
     }
     else
     {
-        position.board[move.fromRow][move.fromCol] = piece;
+        position.board[move.fromRow][move.fromCol] =
+            piece;
     }
 }
-
 std::vector<Move> generateAllMoves(Position &position)
 {
     if(position.sideToMove == White)
@@ -77,11 +228,16 @@ std::vector<Move> generateAllWhiteMoves(Position &position){
                         auto pawnMoves = generateWhitePawnMoves(position.board,Position);
                         
                       for(auto destination : pawnMoves){
-                        Move Plays = {Position.row,
-                            Position.col,
-                            destination.row,
-                            destination.col, 
-                            position.board[destination.row][destination.col]};
+                        Move Plays{};
+
+                            Plays.fromRow = Position.row;
+                            Plays.fromCol = Position.col;
+                            Plays.toRow = destination.row;
+                            Plays.toCol = destination.col;
+                            Plays.capturedPiece =
+                                position.board[destination.row][destination.col];
+                            Plays.promotionPiece = '.';
+
                             //PROMOTION
                             if(destination.row == 0)
                             {
@@ -113,8 +269,18 @@ std::vector<Move> generateAllWhiteMoves(Position &position){
                         auto rookMoves = generateWhiteRookMoves(position.board,Position);
                         
                       for(auto destination : rookMoves){
-                          Move Plays = {Position.row,Position.col,destination.row,destination.col, position.board[destination.row][destination.col]};
-                         allMoves.push_back(Plays);
+                          Move Plays{};
+                          Plays.fromRow = Position.row;
+                          Plays.fromCol = Position.col;
+                          Plays.toRow = destination.row;
+                          Plays.toCol = destination.col;
+                          Plays.capturedPiece = position.board[destination.row][destination.col];
+                          Plays.promotionPiece = '.';
+                            
+                         
+                         
+                         
+                            allMoves.push_back(Plays);
                       }
                      
                     }
@@ -122,7 +288,13 @@ std::vector<Move> generateAllWhiteMoves(Position &position){
                         auto knightMoves = generateWhiteKnightMoves(position.board,Position);
                         
                       for(auto destination : knightMoves){
-                          Move Plays = {Position.row,Position.col,destination.row,destination.col, position.board[destination.row][destination.col]};
+                          Move Plays{};
+                          Plays.fromRow = Position.row;
+                          Plays.fromCol = Position.col;
+                          Plays.toRow = destination.row;
+                          Plays.toCol = destination.col;
+                          Plays.capturedPiece = position.board[destination.row][destination.col];
+                          Plays.promotionPiece = '.';
                          allMoves.push_back(Plays);
                       }
                      
@@ -131,7 +303,13 @@ std::vector<Move> generateAllWhiteMoves(Position &position){
                         auto bishopMoves = generateWhiteBishopMoves(position.board,Position);
                         
                       for(auto destination : bishopMoves){
-                          Move Plays = {Position.row,Position.col,destination.row,destination.col, position.board[destination.row][destination.col]};
+                          Move Plays{};
+                          Plays.fromRow = Position.row;
+                          Plays.fromCol = Position.col;
+                          Plays.toRow = destination.row;
+                          Plays.toCol = destination.col;
+                          Plays.capturedPiece = position.board[destination.row][destination.col];
+                          Plays.promotionPiece = '.';
                          allMoves.push_back(Plays);
                       }
                      
@@ -140,7 +318,13 @@ std::vector<Move> generateAllWhiteMoves(Position &position){
                         auto queenMoves = generateWhiteQueenMoves(position.board,Position);
                         
                       for(auto destination : queenMoves){
-                          Move Plays = {Position.row,Position.col,destination.row,destination.col, position.board[destination.row][destination.col]};
+                          Move Plays{};
+                          Plays.fromRow = Position.row;
+                          Plays.fromCol = Position.col;
+                          Plays.toRow = destination.row;
+                          Plays.toCol = destination.col;
+                          Plays.capturedPiece = position.board[destination.row][destination.col];
+                          Plays.promotionPiece = '.';
                          allMoves.push_back(Plays);
                       }
                      
@@ -149,9 +333,45 @@ std::vector<Move> generateAllWhiteMoves(Position &position){
                         auto kingMoves = generateWhiteKingMoves(position.board,Position);
                         
                       for(auto destination : kingMoves){
-                          Move Plays = {Position.row,Position.col,destination.row,destination.col, position.board[destination.row][destination.col]};
-                         allMoves.push_back(Plays);
+                          Move Plays{};
+                          Plays.fromRow = Position.row;
+                          Plays.fromCol = Position.col;
+                          Plays.toRow = destination.row;
+                          Plays.toCol = destination.col;
+                          Plays.capturedPiece = position.board[destination.row][destination.col];
+                          Plays.promotionPiece = '.';
+
+
+                            allMoves.push_back(Plays);
                       }
+                      //whiteKingsideRookMoved
+                       if(!position.whiteKingMoved && !position.whiteKingsideRookMoved){
+                                if(position.board[7][6] == '.' && position.board[7][7]=='.' && position.board[7][8] == 'R'){
+                                    Move castle{};
+                                        castle.fromRow = 7;
+                                        castle.fromCol = 5;
+                                        castle.toRow = 7;
+                                        castle.toCol = 7;
+                                        castle.capturedPiece = '.';
+                                        castle.promotionPiece = '.';
+
+                                        allMoves.push_back(castle);
+                                }
+                            }
+                        //whiteQueenSideRookMoved
+                        if(!position.whiteKingMoved && !position.whiteQueensideRookMoved){
+                                if(position.board[7][2] == '.' && position.board[7][3]=='.' && position.board[7][4]=='.' && position.board[7][1] == 'R'){
+                                    Move castle{};
+                                        castle.fromRow = 7;
+                                        castle.fromCol = 5;
+                                        castle.toRow = 7;
+                                        castle.toCol = 3;
+                                        castle.capturedPiece = '.';
+                                        castle.promotionPiece = '.';
+
+                                        allMoves.push_back(castle);
+                                }
+                            }
                      
                     }
                     
@@ -183,11 +403,15 @@ std::vector<Move> generateAllBlackMoves(Position &position){
                         auto pawnMoves = generateBlackPawnMoves(position.board,Position);
                         
                       for(auto destination : pawnMoves){
-                          Move Plays = {Position.row,
-                            Position.col,
-                            destination.row,
-                            destination.col, 
-                            position.board[destination.row][destination.col]};
+                          Move Plays{};
+
+                            Plays.fromRow = Position.row;
+                            Plays.fromCol = Position.col;
+                            Plays.toRow = destination.row;
+                            Plays.toCol = destination.col;
+                            Plays.capturedPiece =
+                                position.board[destination.row][destination.col];
+                            Plays.promotionPiece = '.';
 
                             if(destination.row == 7)
                             {
@@ -221,7 +445,13 @@ std::vector<Move> generateAllBlackMoves(Position &position){
                         auto rookMoves = generateBlackRookMoves(position.board,Position);
                         
                       for(auto destination : rookMoves){
-                          Move Plays = {Position.row,Position.col,destination.row,destination.col, position.board[destination.row][destination.col]};
+                          Move Plays{};
+                          Plays.fromRow = Position.row;
+                          Plays.fromCol = Position.col;
+                          Plays.toRow = destination.row;
+                          Plays.toCol = destination.col;
+                          Plays.capturedPiece = position.board[destination.row][destination.col];
+                          Plays.promotionPiece = '.';
                          allMoves.push_back(Plays);
                       }
                      
@@ -230,7 +460,13 @@ std::vector<Move> generateAllBlackMoves(Position &position){
                         auto knightMoves = generateBlackKnightMoves(position.board,Position);
                         
                       for(auto destination : knightMoves){
-                          Move Plays = {Position.row,Position.col,destination.row,destination.col, position.board[destination.row][destination.col]};
+                          Move Plays{};
+                          Plays.fromRow = Position.row;
+                          Plays.fromCol = Position.col;
+                          Plays.toRow = destination.row;
+                          Plays.toCol = destination.col;
+                          Plays.capturedPiece = position.board[destination.row][destination.col];
+                          Plays.promotionPiece = '.';
                          allMoves.push_back(Plays);
                       }
                      
@@ -239,7 +475,13 @@ std::vector<Move> generateAllBlackMoves(Position &position){
                         auto bishopMoves = generateBlackBishopMoves(position.board,Position);
                         
                       for(auto destination : bishopMoves){
-                          Move Plays = {Position.row,Position.col,destination.row,destination.col, position.board[destination.row][destination.col]};
+                          Move Plays{};
+                          Plays.fromRow = Position.row;
+                          Plays.fromCol = Position.col;
+                          Plays.toRow = destination.row;
+                          Plays.toCol = destination.col;
+                          Plays.capturedPiece = position.board[destination.row][destination.col];
+                          Plays.promotionPiece = '.';
                          allMoves.push_back(Plays);
                       }
                      
@@ -248,7 +490,13 @@ std::vector<Move> generateAllBlackMoves(Position &position){
                         auto queenMoves = generateBlackQueenMoves(position.board,Position);
                         
                       for(auto destination : queenMoves){
-                          Move Plays = {Position.row,Position.col,destination.row,destination.col, position.board[destination.row][destination.col]};
+                          Move Plays{};
+                          Plays.fromRow = Position.row;
+                          Plays.fromCol = Position.col;
+                          Plays.toRow = destination.row;
+                          Plays.toCol = destination.col;
+                          Plays.capturedPiece = position.board[destination.row][destination.col];
+                          Plays.promotionPiece = '.';
                          allMoves.push_back(Plays);
                       }
                      
@@ -257,8 +505,47 @@ std::vector<Move> generateAllBlackMoves(Position &position){
                         auto kingMoves = generateBlackKingMoves(position.board,Position);
                         
                       for(auto destination : kingMoves){
-                          Move Plays = {Position.row,Position.col,destination.row,destination.col, position.board[destination.row][destination.col]};
-                         allMoves.push_back(Plays);
+                          Move Plays{};
+                          Plays.fromRow = Position.row;
+                          Plays.fromCol = Position.col;
+                          Plays.toRow = destination.row;
+                          Plays.toCol = destination.col;
+                          Plays.capturedPiece = position.board[destination.row][destination.col];
+                          Plays.promotionPiece = '.';
+                         
+                         
+                          allMoves.push_back(Plays);
+                      }
+
+                          //BlackKingsideRookMoved
+                       if(!position.blackKingMoved && !position.blackKingsideRookMoved){
+                                if(position.board[0][6] == '.' && position.board[0][7]=='.' && position.board[0][8] == 'r'){
+                                    Move castle{};
+                                        castle.fromRow = 0;
+                                        castle.fromCol = 5;
+                                        castle.toRow = 0;
+                                        castle.toCol = 7;
+                                        castle.capturedPiece = '.';
+                                        castle.promotionPiece = '.';
+
+                                        allMoves.push_back(castle);
+                                }
+                            }
+                        //BlackQueenSideRookMoved
+                        if(!position.blackKingMoved && !position.blackQueensideRookMoved){
+                                if(position.board[0][2] == '.' && position.board[0][3]=='.' && position.board[0][4]=='.' && position.board[0][1] == 'r'){
+                                    Move castle{};
+                                        castle.fromRow = 0;
+                                        castle.fromCol = 5;
+                                        castle.toRow = 0;
+                                        castle.toCol = 3;
+                                        castle.capturedPiece = '.';
+                                        castle.promotionPiece = '.';
+
+                                        allMoves.push_back(castle);
+                                }
+                            }
+
                       }
                      
                     }
@@ -267,9 +554,8 @@ std::vector<Move> generateAllBlackMoves(Position &position){
                 }
             }
         }
-    }
-
     
+
     return allMoves;
 }
 
