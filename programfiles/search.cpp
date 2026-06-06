@@ -14,8 +14,85 @@ evaluate
 #include <algorithm>
 
 int quiescence(Position &position, int alpha, int beta){
+    nodes++;
     int standPat = evaluate(position);
-    return standPat;
+    if(position.sideToMove == White)
+{
+    if(standPat >= beta)
+        return beta;
+
+    if(standPat > alpha)
+        alpha = standPat;
+}
+else
+{
+    if(standPat <= alpha)
+        return alpha;
+
+    if(standPat < beta)
+        beta = standPat;
+}
+auto moves = generateLegalMoves(position);
+std::sort(moves.begin(), moves.end(),
+    [](const Move& a,const Move& b)
+{
+    return moveScore(a) > moveScore(b);
+});
+for(auto move : moves)
+{
+    if(move.capturedPiece == '.')
+    {
+        continue;
+    }
+
+        makeMove(position, move);
+
+            switchSideToMove(position);
+
+            int score =
+                quiescence(
+                    position,
+                    alpha,
+                    beta
+                );
+
+            switchSideToMove(position);
+
+undoMove(position, move);
+                //WHITE NODE
+                if(position.sideToMove == White){
+                                if(score > alpha)
+                                {
+                                    alpha = score;
+                                }
+
+                                if(alpha >= beta)
+                                {
+                                    return beta;
+                                }
+                }else{
+                    if(score < beta)
+                        {
+                            beta = score;
+                        }
+
+                        if(alpha >= beta)
+                        {
+                            return alpha;
+                        }
+                }
+
+
+}
+    if(position.sideToMove == White)
+{
+    return alpha;
+}
+
+return beta;
+        
+
+    // return standPat;
 }
 
 int moveScore(Move move){
@@ -61,7 +138,7 @@ int minimax(Position &position, int depth,int alpha, int beta){
     nodes++;
 
     if(depth ==0){
-        
+
         return quiescence(position, alpha, beta);
     }
     auto moves = generateLegalMoves(position);
