@@ -35,74 +35,91 @@ int main()
     }
 
     // Simulate black just played d7-d5
-    position.enPassantRow = 2;
-    position.enPassantCol = 4;
+    // position.enPassantRow = 2;
+    // position.enPassantCol = 4;
 
-    std::cout << "Initial Position:\n";
-    printBoard(position.board);
+    // std::cout << "Initial Position:\n";
+    // printBoard(position.board);
 
-    auto legalMoves =
-        generateLegalMoves(position);
+    // auto legalMoves =
+    //     generateLegalMoves(position);
 
-    std::cout << "\nGenerated Moves:\n";
+    // std::cout << "\nGenerated Moves:\n";
 
-    for(auto move : legalMoves)
-    {
-        std::cout
-            << move.fromRow << ","
-            << move.fromCol
-            << " -> "
-            << move.toRow << ","
-            << move.toCol
-            << " EP="
-            << move.isEnPassant
-            << "\n";
-    }
+    // for(auto move : legalMoves)
+    // {
+    //     std::cout
+    //         << move.fromRow << ","
+    //         << move.fromCol
+    //         << " -> "
+    //         << move.toRow << ","
+    //         << move.toCol
+    //         << " EP="
+    //         << move.isEnPassant
+    //         << "\n";
+    // }
 
-    Move epMove{};
+    // Move epMove{};
 
-    bool found = false;
+    // bool found = false;
 
-    for(auto move : legalMoves)
-    {
-        if(move.isEnPassant)
-        {
-            epMove = move;
-            found = true;
-            break;
-        }
-    }
+    // for(auto move : legalMoves)
+    // {
+    //     if(move.isEnPassant)
+    //     {
+    //         epMove = move;
+    //         found = true;
+    //         break;
+    //     }
+    // }
 
-    if(!found)
-    {
-        std::cout
-            << "\nNO EN PASSANT MOVE FOUND\n";
+    // if(!found)
+    // {
+    //     std::cout
+    //         << "\nNO EN PASSANT MOVE FOUND\n";
 
-        return 0;
-    }
+    //     return 0;
+    // }
 
-    std::cout
-        << "\nTesting move:\n"
-        << epMove.fromRow << ","
-        << epMove.fromCol
-        << " -> "
-        << epMove.toRow << ","
-        << epMove.toCol
-        << "\n";
+    // std::cout
+    //     << "\nTesting move:\n"
+    //     << epMove.fromRow << ","
+    //     << epMove.fromCol
+    //     << " -> "
+    //     << epMove.toRow << ","
+    //     << epMove.toCol
+    //     << "\n";
 
-    makeMove(position, epMove);
+    // makeMove(position, epMove);
 
-    std::cout
-        << "\nAfter makeMove:\n";
+    // std::cout
+    //     << "\nAfter makeMove:\n";
 
-    printBoard(position.board);
+    // printBoard(position.board);
 
-    undoMove(position, epMove);
+    // undoMove(position, epMove);
 
-    std::cout
-        << "\nAfter undoMove:\n";
+    // std::cout
+    //     << "\nAfter undoMove:\n";
 
-    printBoard(position.board);
+    // printBoard(position.board);
 
+    #include "perft.h"
+
+std::cout << "Perft(0): "
+          << perft(position,0)
+          << "\n";
+
+std::cout << "Perft(1): "
+          << perft(position,1)
+          << "\n";
+
+std::cout << "Perft(2): "
+          << perft(position,2)
+          << "\n";
+
+std::cout << "Perft(3): "
+          << perft(position,3)
+          << "\n";
     return 0;
 }
