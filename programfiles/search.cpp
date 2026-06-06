@@ -8,42 +8,46 @@ this file should call
 genmoves
 validatemove
 evaluate
-
-
-
  */
-
-
 
 #include "search.h"
 #include <algorithm>
 
 int moveScore(Move move){
+    int score  = 0;
+    if(move.promotionPiece != '.'){
+        score += 800; 
+    }
     if(move.capturedPiece != '.'){
         switch(move.capturedPiece){
             case 'Q':
             case 'q':
-                return 900;
+                score += 900;
+                break;
 
             case 'R':
             case 'r':
-                return 500;
-            
+                score += 500;
+                break;
+
             case 'B':
             case 'b':
             case 'N':
             case 'n':
-                return 300;
-            
+                score += 300;
+                break;
+                
+                
             case 'P':
             case 'p':
-                return 100;
+                score += 100;
+                break;
 
             default:
                 return 0;
         }
     }
-    return 0;
+    return score;
 }
 
  int nodes = 0;
