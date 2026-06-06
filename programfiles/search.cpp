@@ -13,6 +13,11 @@ evaluate
 #include "search.h"
 #include <algorithm>
 
+int quiescence(Position &position, int alpha, int beta){
+    int standPat = evaluate(position);
+    return standPat;
+}
+
 int moveScore(Move move){
     int score  = 0;
     if(move.promotionPiece != '.'){
@@ -56,7 +61,8 @@ int minimax(Position &position, int depth,int alpha, int beta){
     nodes++;
 
     if(depth ==0){
-        return evaluate(position);
+        
+        return quiescence(position, alpha, beta);
     }
     auto moves = generateLegalMoves(position);
     // Move Ordering
