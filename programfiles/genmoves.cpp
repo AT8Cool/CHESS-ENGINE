@@ -7,6 +7,107 @@ are the best or not. i.e It doesnt matter your king ends up in  check or vulener
 
 */
 #include "genmoves.h"
+
+std::vector<Move> generateEnPassantMoves(Position &position){
+    std::vector<Move> epMoves;
+        if(position.enPassantRow == -1){
+            return epMoves;
+        }
+        //WHITE ENPASSANT
+
+        if(position.sideToMove == White)
+                {
+                    int row = position.enPassantRow;
+                    int col = position.enPassantCol;
+                    
+
+                    if(row + 1 < 8 &&
+                    col - 1 >= 1 &&
+                    position.board[row + 1][col - 1] == 'P')
+                    {  
+                        Move move{};
+                        move.isEnPassant = true;
+                        move.fromRow = row + 1;
+                        move.fromCol = col - 1;
+
+                        move.toRow = row;
+                        move.toCol = col;
+
+                        move.capturedPiece = 'p';
+                        move.promotionPiece = '.';
+
+                        epMoves.push_back(move);
+                    }
+
+                    if(row + 1 < 8 &&
+                    col + 1 <= 8 &&
+                    position.board[row + 1][col + 1] == 'P')
+                    {
+                        Move move{};
+
+                        move.isEnPassant = true;
+                        move.fromRow = row + 1;
+                        move.fromCol = col + 1;
+
+                        move.toRow = row;
+                        move.toCol = col;
+
+                        move.capturedPiece = 'p';
+                        move.promotionPiece = '.';
+
+                        epMoves.push_back(move);
+                    }
+                }
+      
+            //BLACK ENPASSANT
+            if(position.sideToMove == Black)
+            {
+                int row = position.enPassantRow;
+                int col = position.enPassantCol;
+
+                if(row - 1 >= 0 &&
+                col - 1 >= 1 &&
+                position.board[row - 1][col - 1] == 'p')
+                {
+                    Move move{};
+
+                    move.isEnPassant = true;
+                    move.fromRow = row - 1;
+                    move.fromCol = col - 1;
+
+                    move.toRow = row;
+                    move.toCol = col;
+
+                    move.capturedPiece = 'P';
+                    move.promotionPiece = '.';
+
+                    epMoves.push_back(move);
+                }
+
+                if(row - 1 >= 0 &&
+                col + 1 <= 8 &&
+                position.board[row - 1][col + 1] == 'p')
+                {
+                    Move move{};
+
+                    move.isEnPassant = true;
+                    move.fromRow = row - 1;
+                    move.fromCol = col + 1;
+
+                    move.toRow = row;
+                    move.toCol = col;
+
+                    move.capturedPiece = 'P';
+                    move.promotionPiece = '.';
+
+                    epMoves.push_back(move);
+                }
+            }
+
+            return epMoves;
+
+}
+
 //==============================================White pieces==============================================
 //BELOW THIS ARE THE WHITE PIECE MOVES
 //WHITE PAWN MOVES

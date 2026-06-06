@@ -4,25 +4,7 @@
 #include<iostream>
 #include "genmoves.h"
 #include "position.h"
-struct Move
-{
-    int fromRow;
-    int fromCol;
-    int toRow;
-    int toCol;
-
-    char capturedPiece;
-    char promotionPiece;
-
-    bool oldWhiteKingMoved;
-    bool oldBlackKingMoved;
-
-    bool oldWhiteKingsideRookMoved;
-    bool oldWhiteQueensideRookMoved;
-
-    bool oldBlackKingsideRookMoved;
-    bool oldBlackQueensideRookMoved;
-};
+#include "move.h"
 
 void makeMove(Position &position, Move &move);
 void switchSideToMove(Position & position);

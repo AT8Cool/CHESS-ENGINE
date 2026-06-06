@@ -1,9 +1,48 @@
 #include "makemove.h"
 
+void handleEnPassant(Position& position, Move& move){
+   if(!move.isEnPassant)
+    {
+        return;
+    }
+
+    char piece =
+        position.board[move.fromRow][move.fromCol];
+
+    if(piece == 'P')
+    {
+        position.board[move.toRow + 1][move.toCol] = '.';
+    }
+    else if(piece == 'p')
+    {
+        position.board[move.toRow - 1][move.toCol] = '.';
+    }
+}
+
+void undoEnPassant(Position& position, Move& move)
+{
+    if(!move.isEnPassant)
+    {
+        return;
+    }
+
+    char piece =
+        position.board[move.fromRow][move.fromCol];
+
+    if(piece == 'P')
+    {
+        position.board[move.toRow + 1][move.toCol] = 'p';
+    }
+    else if(piece == 'p')
+    {
+        position.board[move.toRow - 1][move.toCol] = 'P';
+    }
+}
 
 void makeMove(Position &position, Move &move){
 
         char piece = position.board[move.fromRow][move.fromCol];
+        handleEnPassant(position, move);
         
             //Save castling righst for undo 
                 move.oldWhiteKingMoved = position.whiteKingMoved;
@@ -14,6 +53,32 @@ void makeMove(Position &position, Move &move){
 
                 move.oldBlackKingsideRookMoved = position.blackKingsideRookMoved;
                 move.oldBlackQueensideRookMoved = position.blackQueensideRookMoved;
+
+            //EnPassant Logic Start
+            move.oldEnPassantRow = position.enPassantRow;
+            move.oldEnPassantCol = position.enPassantCol;
+            //Clear Old en passant square
+            position.enPassantRow = -1;
+            position.enPassantCol = -1;
+
+           
+            //White Pawn Enpassant
+            //White Pawn Double Pawn Push
+            if(piece == 'P' && move.fromRow==6 && move.toRow == 4){
+                position.enPassantRow = 5;
+                position.enPassantCol = move.fromCol;
+            }
+            //Black Pawn EnPassant
+            //Black Pawn Double Pawn Push
+            if(piece == 'p' && move.fromRow == 1 && move.toRow == 3){
+                position.enPassantRow = 2;
+                position.enPassantCol = move.fromCol;
+            }
+
+            
+
+            //EnPassant Logic End
+            //Castling Logic Continues
 
 
             //Update castling rights
@@ -115,7 +180,6 @@ void undoMove(Position &position, Move &move)
 {
     char piece =
         position.board[move.toRow][move.toCol];
-     
 
     // Restore castling rights
     position.whiteKingMoved =
@@ -135,6 +199,13 @@ void undoMove(Position &position, Move &move)
 
     position.blackQueensideRookMoved =
         move.oldBlackQueensideRookMoved;
+
+    // Restore en passant state
+    position.enPassantRow =
+        move.oldEnPassantRow;
+
+    position.enPassantCol =
+        move.oldEnPassantCol;
 
     // Undo castling
 
@@ -178,11 +249,21 @@ void undoMove(Position &position, Move &move)
         position.board[0][1] = 'r';
     }
 
-    // Remove moved piece
-    position.board[move.toRow][move.toCol] =
-        move.capturedPiece;
+    // Restore destination square
 
-    // Undo promotion
+    if(move.isEnPassant)
+    {
+        position.board[move.toRow][move.toCol] =
+            '.';
+    }
+    else
+    {
+        position.board[move.toRow][move.toCol] =
+            move.capturedPiece;
+    }
+
+    // Restore moved piece
+
     if(move.promotionPiece != '.')
     {
         if(isupper(move.promotionPiece))
@@ -201,7 +282,12 @@ void undoMove(Position &position, Move &move)
         position.board[move.fromRow][move.fromCol] =
             piece;
     }
+
+    // Restore captured en passant pawn
+    undoEnPassant(position, move);
 }
+
+
 std::vector<Move> generateAllMoves(Position &position)
 {
     if(position.sideToMove == White)
@@ -381,6 +467,9 @@ std::vector<Move> generateAllWhiteMoves(Position &position){
         }
     }
     
+   std::vector<Move> epMoves =
+    generateEnPassantMoves(position);
+    allMoves.insert(allMoves.end(), epMoves.begin(), epMoves.end());
 
 
     return allMoves;
@@ -554,7 +643,9 @@ std::vector<Move> generateAllBlackMoves(Position &position){
                 }
             }
         }
-    
+    std::vector<Move> epMoves =
+    generateEnPassantMoves(position);
+    allMoves.insert(allMoves.end(), epMoves.begin(), epMoves.end());
 
     return allMoves;
 }

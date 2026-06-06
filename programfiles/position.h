@@ -28,7 +28,9 @@ struct Position{
     bool blackQueensideRookMoved = false;
 
     int enPassantRow = -1;
-    int enPassantRow = -1;
+    int enPassantCol = -1;
+
+
 };
 
 

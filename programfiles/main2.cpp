@@ -21,11 +21,11 @@ char board[9][9] =
     {'8','.','.','.','.','k','.','.','.'},
     {'7','.','.','.','.','.','.','.','.'},
     {'6','.','.','.','.','.','.','.','.'},
-    {'5','.','.','.','.','.','.','.','.'},
+    {'5','.','.','.','p','P','.','.','.'},
     {'4','.','.','.','.','.','.','.','.'},
     {'3','.','.','.','.','.','.','.','.'},
-    {'2','.','.','.','.','.','.','r','.'},
-    {'1','R','.','.','.','K','.','.','R'},
+    {'2','.','.','.','.','.','.','.','.'},
+    {'1','.','.','.','.','K','.','.','.'},
     {' ','a','b','c','d','e','f','g','h'},
 };
 
@@ -147,6 +147,31 @@ printBoard(position.board);
 
 auto legalMoves = generateLegalMoves(position);
 
+Move testMove{};
+
+testMove.fromRow = 3;
+testMove.fromCol = 5;
+
+testMove.toRow = 2;
+testMove.toCol = 4;
+
+testMove.capturedPiece = 'p';
+
+testMove.isEnPassant = true;
+
+for(auto move : legalMoves)
+{
+    std::cout
+        << move.fromRow << ","
+        << move.fromCol
+        << " -> "
+        << move.toRow << ","
+        << move.toCol
+        << " EP="
+        << move.isEnPassant
+        << "\n";
+}
+
 std::cout << "\nCastling moves found:\n";
 
 for(auto move : legalMoves)
@@ -175,16 +200,24 @@ std::cout
     << position.whiteKingsideRookMoved
     << "\n";
 
-    Move testMove;
-if(!legalMoves.empty())
-{
-    testMove = legalMoves[0];
-}else{
-     std::cout << "No legal moves!\n";
-    return 0;
-}
+    Move testMove =  {6,5,4,5,'.', '.'};
+// if(!legalMoves.empty())
+// {
+//     testMove = legalMoves[0];
+// }else{
+//      std::cout << "No legal moves!\n";
+//     return 0;
+// }
 
 makeMove(position,testMove);
+std::cout
+    << "EP square: "
+    << position.enPassantRow
+    << ","
+    << position.enPassantCol
+    << "\n";
+
+printBoard(position.board);
 
 std::cout << "\nAfter makeMove:\n";
 printBoard(position.board);
