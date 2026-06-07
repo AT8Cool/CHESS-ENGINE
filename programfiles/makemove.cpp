@@ -644,7 +644,7 @@ std::vector<Move> generateAllBlackMoves(Position &position){
             }
         }
     std::vector<Move> epMoves =
-    generateEnPassantMoves(position);
+        generateEnPassantMoves(position);
     allMoves.insert(allMoves.end(), epMoves.begin(), epMoves.end());
 
     return allMoves;

@@ -2,3 +2,24 @@
 .vscode/
 .history/
 *.code-workspace
+
+# Build artifacts
+*.exe
+*.out
+*.o
+*.obj
+*.a
+*.lib
+*.dll
+*.exp
+*.ilk
+*.pdb
+
+# Runtime logs
+*.log
+
+# Project-generated engine binaries
+programfiles/arena_uci*.exe
+programfiles/engine*.exe
+programfiles/test4.exe
+programfiles/*.log

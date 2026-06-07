@@ -12,6 +12,7 @@ evaluate
 
 #include "search.h"
 #include <algorithm>
+#include <climits>
 
 int quiescence(Position &position, int alpha, int beta){
     nodes++;
@@ -261,16 +262,6 @@ Move bestMoveFinder(Position &position, int depth){
                 int score = minimax(position,depth-1,INT_MIN,INT_MAX);
                 switchSideToMove(position); 
                 undoMove(position, move);
-
-                         std::cout
-        << move.fromRow << ","
-        << move.fromCol
-        << " -> "
-        << move.toRow << ","
-        << move.toCol
-        << " score="
-        << score
-        << "\n";
 
                 if(score < bestScore){
                     bestScore = score;

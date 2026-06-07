@@ -18,3 +18,35 @@ THANK YOU FOR CHECKING IT OUT AND I HOPE TO SEE YOU AROUND
 
 Atharva Bhosale
 
+## Arena GUI
+
+To use this engine in Arena Chess GUI, run the UCI build:
+
+```powershell
+# From C:\PersonalProjects\chess-engine
+g++ programfiles\uci.cpp programfiles\position.cpp programfiles\genmoves.cpp programfiles\makemove.cpp programfiles\validatemove.cpp programfiles\evaluate.cpp programfiles\pst.cpp programfiles\search.cpp programfiles\ucihelper.cpp -std=c++17 -O2 -o programfiles\arena_uci.exe
+```
+
+If you are already inside `C:\PersonalProjects\chess-engine\programfiles`, use:
+
+```powershell
+g++ uci.cpp position.cpp genmoves.cpp makemove.cpp validatemove.cpp evaluate.cpp pst.cpp search.cpp ucihelper.cpp -std=c++17 -O2 -o arena_uci.exe
+```
+
+Then add `programfiles\arena_uci.exe` in Arena as a `UCI` engine.
+
+The engine currently supports the core commands Arena needs for normal play:
+
+- `uci`
+- `isready`
+- `ucinewgame`
+- `position startpos ...`
+- `position fen ...`
+- `go depth ...`
+- `quit`
+
+If Arena sends a time-based `go` command without a depth, the engine falls back to a fixed search depth.
+
+Guys wait I am not done yet. Checkout the README/choicesAndChallenges.md and the README/architecture.md for more insights
+
+
