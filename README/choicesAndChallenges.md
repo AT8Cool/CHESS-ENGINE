@@ -1,4 +1,4 @@
-# THIS README IS DEDCATIED TO THE CHESS ENGINE ARCHITECTURE AND DESIGN CHOICES I MADE, AND THE CHALLENGES I FACED WHILE BUILDING THIS PROJECT. AND SOME VERY VERY OBIVIOUS MISTAKES I MADE 🤣🤣🤣🤣
+# THIS README IS DEDICATIED TO THE CHESS ENGINE ARCHITECTURE AND DESIGN CHOICES I MADE, AND THE CHALLENGES I FACED WHILE BUILDING THIS PROJECT. AND SOME VERY VERY OBIVIOUS MISTAKES I MADE 🤣🤣🤣🤣
 
 SO I started writing this engine back in last saturday I am writing this markdown on the night(Morning) of the next sunday at 2:27am. This took longer than I anticipated and I wish to never do it again for the sake of my sanity. Just Kidding. I got to learn so much with this project I don't I ever will be the same. So many basics got cleared. I had never thought I would be this grateful. What was suppose to be just a weekend project took a whole lot more. And I think my decision on guidance while I figure out the code myself was worth it.
 
