@@ -236,11 +236,12 @@ Move bestMoveFinder(Position &position, int depth){
         Move bestMove = moves[0];   
         if(position.sideToMove == White){
             int bestScore = INT_MIN;
+            int alpha = INT_MIN; // track best score found so far at root, carried across siblings
                 for(auto move: moves){
                     makeMove(position,move);
                     switchSideToMove(position);
 
-                int score = minimax(position,depth-1, INT_MIN, INT_MAX);
+                int score = minimax(position,depth-1, alpha, INT_MAX); // was INT_MIN — now passes tightened alpha so later siblings can prune
                 switchSideToMove(position); 
                 undoMove(position, move);
 
@@ -248,27 +249,32 @@ Move bestMoveFinder(Position &position, int depth){
                     bestScore = score;
                     bestMove = move;
                 }
+                if(score >alpha){
+                    alpha = score;// tighten window for next sibling move
+                }
                 }
             
                 return bestMove;
                 }
-
+//Black Branch
                 int bestScore = INT_MAX;
+                int beta = INT_MAX;// track best (lowest) score found so far at root, carried across siblings
+
 
                 for(auto move: moves){
                     makeMove(position,move);
                     switchSideToMove(position);
 
-                int score = minimax(position,depth-1,INT_MIN,INT_MAX);
+                int score = minimax(position,depth-1,INT_MIN,beta); // was INT_MAX — now passes tightened beta so later siblings can prune
                 switchSideToMove(position); 
                 undoMove(position, move);
 
                 if(score < bestScore){
                     bestScore = score;
                     bestMove = move;
-
-           
                 }
+                    if (score < beta){beta = score;}// tighten window for next sibling move
+                
                 }
                 
             return bestMove;
