@@ -1,31 +1,63 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chess Engine</title>
+
+   <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.css"
+>
+    <link rel="stylesheet" href="styles.css">
+</head>
 <body>
+    <main class="app">
+        <h1>Chess Engine</h1>
+        <p class="subtitle">You play White. The engine plays Black.</p>
 
-<h1 id="result">Loading...</h1>
+        <div id="board" class="board" aria-label="Chess board"></div>
 
-<script src="chess_engine.js"></script>
+        <section class="game-info" aria-live="polite">
+            <p id="status">Loading engine…</p>
+            <button id="new-game" type="button">New Game</button>
+        </section>
 
-<script>
-Module.onRuntimeInitialized = function() {
+        <section class="history">
+            <h2>Moves</h2>
+            <p id="move-history">No moves yet.</p>
+        </section>
+    </main>
 
-    const findBestMove =
-        Module.cwrap(
-            "findBestMove",
-            "string",
-            ["string", "number"]
-        );
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.js"></script>
+    <script>
+        if (typeof window.Chessboard !== "function") {
+            throw new Error("chessboard.js failed to load.");
+        }
+    </script>
 
-    const startFen =
-        "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+    <script>
+        window.engineReady = new Promise(function (resolve) {
+            window.resolveEngineReady = resolve;
+        });
 
-    const move =
-        findBestMove(startFen, 4);
-
-    document.getElementById("result").innerText =
-        "Best Move: " + move;
-};
-</script>
-
+        var Module = {
+            locateFile: function (path) {
+                return path.endsWith(".wasm") ? "chess_engine.wasm" : path;
+            },
+            onRuntimeInitialized: function () {
+                window.findBestMove = Module.cwrap(
+                    "findBestMove",
+                    "string",
+                    ["string", "number"]
+                );
+                window.resolveEngineReady();
+            }
+        };
+    </script>
+    <script src="chess_engine.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
