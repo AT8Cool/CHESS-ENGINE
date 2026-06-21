@@ -38,26 +38,6 @@
         }
     </script>
 
-    <script>
-        window.engineReady = new Promise(function (resolve) {
-            window.resolveEngineReady = resolve;
-        });
-
-        var Module = {
-            locateFile: function (path) {
-                return path.endsWith(".wasm") ? "chess_engine.wasm" : path;
-            },
-            onRuntimeInitialized: function () {
-                window.findBestMove = Module.cwrap(
-                    "findBestMove",
-                    "string",
-                    ["string", "number"]
-                );
-                window.resolveEngineReady();
-            }
-        };
-    </script>
-    <script src="chess_engine.js"></script>
     <script src="app.js"></script>
 </body>
 </html>

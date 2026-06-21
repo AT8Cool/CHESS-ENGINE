@@ -5,13 +5,27 @@ const newGameButton = document.getElementById("new-game");
 
 let engineLoaded = false;
 let engineThinking = false;
-let pendingEngineMove = null;
+let engineError = null;
 let gameVersion = 0;
+let nextEngineRequestId = 1;
+let activeEngineRequestId = null;
+const isTouchDevice = "ontouchstart" in window;
+const engineWorker = new Worker("engine-worker.js");
+
+engineWorker.addEventListener("message", handleEngineMessage);
+engineWorker.addEventListener("error", function (error) {
+    console.error(error);
+    engineLoaded = false;
+    engineThinking = false;
+    activeEngineRequestId = null;
+    engineError = "The chess engine worker failed.";
+    updateStatus();
+});
 
 const board = Chessboard("board", {
     position: "start",
     orientation: "white",
-    draggable: !("ontouchstart" in window),
+    draggable: !isTouchDevice,
     pieceTheme: function (piece) {
         const pieceImages = {
             wP: "pieces/white-pawn.png",
@@ -61,45 +75,96 @@ function onDrop(source, target) {
     }
 }
 
-function makeEngineMove(requestedVersion) {
-    pendingEngineMove = null;
+function handleEngineMessage(event) {
+    const message = event.data || {};
 
-    if (requestedVersion !== gameVersion || game.game_over()) {
+    if (message.type === "ready") {
+        engineLoaded = true;
+        engineError = null;
+        updateDisplay();
+        return;
+    }
+
+    if (message.type === "init-error") {
+        engineLoaded = false;
+        engineThinking = false;
+        activeEngineRequestId = null;
+        engineError =
+            message.error || "The chess engine failed to initialize.";
+        updateStatus();
+        return;
+    }
+
+    if (
+        message.requestId !== activeEngineRequestId ||
+        message.gameVersion !== gameVersion
+    ) {
+        return;
+    }
+
+    activeEngineRequestId = null;
+
+    if (message.type === "error") {
+        engineThinking = false;
+        updateDisplay(
+            message.error || "The engine could not calculate a move."
+        );
+        return;
+    }
+
+    if (message.type !== "result") {
+        return;
+    }
+
+    if (game.game_over() || game.turn() !== "b") {
         engineThinking = false;
         updateDisplay();
         return;
     }
 
-    try {
-        const uciMove = window.findBestMove(game.fen(), 4);
+    const uciMove = message.bestMove;
 
-        if (!uciMove || uciMove === "0000") {
-            engineThinking = false;
-            updateDisplay("The engine did not return a legal move.");
-            return;
-        }
-
-        const move = game.move({
-            from: uciMove.slice(0, 2),
-            to: uciMove.slice(2, 4),
-            promotion: uciMove.length > 4 ? uciMove[4] : "q"
-        });
-
-        if (move === null) {
-            engineThinking = false;
-            updateDisplay("The engine returned an invalid move: " + uciMove);
-            return;
-        }
-    } catch (error) {
-        console.error(error);
+    if (!uciMove || uciMove === "0000") {
         engineThinking = false;
-        updateDisplay("The engine could not calculate a move.");
+        updateDisplay("The engine did not return a legal move.");
+        return;
+    }
+
+    const move = game.move({
+        from: uciMove.slice(0, 2),
+        to: uciMove.slice(2, 4),
+        promotion: uciMove.length > 4 ? uciMove[4] : "q"
+    });
+
+    if (move === null) {
+        engineThinking = false;
+        updateDisplay("The engine returned an invalid move: " + uciMove);
         return;
     }
 
     engineThinking = false;
     board.position(game.fen());
     updateDisplay();
+}
+
+function requestEngineMove(requestedVersion) {
+    if (!engineLoaded) {
+        engineThinking = false;
+        updateDisplay("The chess engine is not ready.");
+        return;
+    }
+
+    const requestId = nextEngineRequestId;
+    nextEngineRequestId += 1;
+    activeEngineRequestId = requestId;
+
+    engineWorker.postMessage({
+        type: "search",
+        requestId: requestId,
+        gameVersion: requestedVersion,
+        fen: game.fen(),
+        depth: 4
+    });
 }
 
 function updateDisplay(message) {
@@ -110,6 +175,11 @@ function updateDisplay(message) {
 function updateStatus(message) {
     if (message) {
         statusElement.textContent = message;
+        return;
+    }
+
+    if (engineError) {
+        statusElement.textContent = engineError;
         return;
     }
 
@@ -177,12 +247,7 @@ function updateHistory() {
 function startNewGame() {
     gameVersion += 1;
     clearSelection();
-
-    if (pendingEngineMove !== null) {
-        window.clearTimeout(pendingEngineMove);
-        pendingEngineMove = null;
-    }
-
+    activeEngineRequestId = null;
     engineThinking = false;
     game.reset();
     board.start();
@@ -191,6 +256,7 @@ function startNewGame() {
 
 let selectedSquare = null;
 let suppressNextClick = false;
+let touchStart = null;
 
 function squareFromElement(el) {
     const match = el.className.match(/square-([a-h][1-8])\b/);
@@ -236,11 +302,7 @@ function attemptMove(from, to, options) {
     if (!game.game_over()) {
         engineThinking = true;
         updateStatus();
-
-        const requestedVersion = gameVersion;
-        pendingEngineMove = window.setTimeout(function () {
-            makeEngineMove(requestedVersion);
-        }, 100);
+        requestEngineMove(gameVersion);
     }
 
     return true;
@@ -277,33 +339,76 @@ function onSquareTap(square) {
     }
 }
 
-$("#board").on("click", ".square-55d63", function () {
-    if (suppressNextClick) {
-        suppressNextClick = false;
-        return;
-    }
+if (isTouchDevice) {
+    $("#board")
+        .on("touchstart", ".square-55d63", function (event) {
+            const touches = event.originalEvent.touches;
 
-    const square = squareFromElement(this);
+            if (touches.length !== 1) {
+                touchStart = null;
+                return;
+            }
 
-    if (square) {
-        onSquareTap(square);
-    }
-});
+            const touch = touches[0];
+            touchStart = {
+                x: touch.clientX,
+                y: touch.clientY,
+                square: squareFromElement(this)
+            };
+        })
+        .on("touchend", ".square-55d63", function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            const start = touchStart;
+            touchStart = null;
+
+            if (!start || !start.square) {
+                return;
+            }
+
+            const touch = event.originalEvent.changedTouches[0];
+
+            if (!touch) {
+                return;
+            }
+
+            const movement = Math.hypot(
+                touch.clientX - start.x,
+                touch.clientY - start.y
+            );
+
+            if (movement < 10) {
+                onSquareTap(start.square);
+            }
+        })
+        .on("touchcancel", ".square-55d63", function () {
+            touchStart = null;
+        })
+        .on("click", ".square-55d63", function (event) {
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            return false;
+        });
+} else {
+    $("#board").on("click", ".square-55d63", function () {
+        if (suppressNextClick) {
+            suppressNextClick = false;
+            return;
+        }
+
+        const square = squareFromElement(this);
+
+        if (square) {
+            onSquareTap(square);
+        }
+    });
+}
 
 newGameButton.addEventListener("click", startNewGame);
 
 window.addEventListener("resize", function () {
     board.resize();
 });
-
-window.engineReady
-    .then(function () {
-        engineLoaded = true;
-        updateDisplay();
-    })
-    .catch(function (error) {
-        console.error(error);
-        statusElement.textContent = "The chess engine failed to load.";
-    });
 
 updateDisplay();
