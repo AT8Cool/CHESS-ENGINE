@@ -4,12 +4,26 @@
 
 <h1 id="result">Loading...</h1>
 
-<script src="test.js"></script>
+<script src="chess_engine.js"></script>
 
 <script>
 Module.onRuntimeInitialized = function() {
+
+    const findBestMove =
+        Module.cwrap(
+            "findBestMove",
+            "string",
+            ["string", "number"]
+        );
+
+    const startFen =
+        "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+
+    const move =
+        findBestMove(startFen, 4);
+
     document.getElementById("result").innerText =
-        Module._add(2, 3);
+        "Best Move: " + move;
 };
 </script>
 

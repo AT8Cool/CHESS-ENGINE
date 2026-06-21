@@ -1,5 +1,5 @@
 extern "C"{
-    const char* findBestMove(
-   returnwai
-)
+    int add( int a, int b){
+        return a + b
+    }
 }
